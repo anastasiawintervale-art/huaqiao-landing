@@ -1,0 +1,4690 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>附近华人交友社区</title>
+   <script type="text/javascript" charset="UTF-8" src="https://res.opstatistics.com/openinstall-xx7hwq.js"></script>
+
+    <style>
+        :root {
+            --primary-pink: #ff7eb3;
+            --soft-pink: #ffdee9;
+            --online-green: #00ff88;
+            --glass: rgba(255, 255, 255, 0.7);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, sans-serif;
+        }
+
+        /* 1. 梦幻光影动态背景 */
+        body {
+            background: linear-gradient(180deg, var(--soft-pink) 0%, #ffffff 80%);
+            background-attachment: fixed;
+            min-height: 100vh;
+            padding-bottom: 100px;
+            overflow-x: hidden;
+        }
+
+        .bg-glow {
+            position: fixed;
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(255, 182, 193, 0.4) 0%, rgba(255, 255, 255, 0) 70%);
+            filter: blur(80px);
+            z-index: -2;
+            border-radius: 50%;
+            animation: float 20s infinite alternate ease-in-out;
+        }
+
+        .glow-1 {
+            top: -150px;
+            left: -150px;
+        }
+
+        .glow-2 {
+            bottom: 5%;
+            right: -200px;
+            background: radial-gradient(circle, rgba(255, 105, 180, 0.15) 0%, rgba(255, 255, 255, 0) 70%);
+            animation-delay: -10s;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translate(0, 0) scale(1);
+            }
+
+            100% {
+                transform: translate(100px, 150px) scale(1.1);
+            }
+        }
+
+        /* 2. 顶部导航与搜索 */
+        header {
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            background: var(--glass);
+            backdrop-filter: blur(20px);
+            padding: 12px 18px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .top-nav {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .top-nav span {
+            font-size: 16px;
+            color: #777;
+            cursor: pointer;
+            transition: 0.3s;
+            position: relative;
+            font-weight: 500;
+        }
+
+        .top-nav span.active {
+            color: #000;
+            font-size: 19px;
+            font-weight: bold;
+        }
+
+        .top-nav span.active::after {
+            content: '';
+            position: absolute;
+            bottom: -6px;
+            left: 15%;
+            width: 70%;
+            height: 3px;
+            background: var(--primary-pink);
+            border-radius: 10px;
+        }
+
+        /* 搜索按钮样式优化 */
+        .search-btn {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255, 255, 255, 0.5);
+            border: 1px solid #fff;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+            cursor: pointer;
+        }
+
+        #search-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 65px;
+            background: #fff;
+            z-index: 1100;
+            padding: 12px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        /* 3. 筛选区域 - 居中且全宽 */
+        .filter-area {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 12px 10px;
+            gap: 8px;
+            width: 100%;
+        }
+
+        .filter-item {
+            position: relative;
+            flex: 1;
+            max-width: 136px;
+        }
+
+        .filter-trigger {
+            width: 100%;
+            background: #fff;
+            border: 1px solid #ffcadb;
+            padding: 8px 10px;
+            border-radius: 20px;
+            font-size: 13px;
+            color: #555;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .filter-trigger::after {
+            content: '▾';
+            font-size: 10px;
+            color: #aaa;
+        }
+
+        .dropdown {
+            display: none;
+            position: absolute;
+            top: 40px;
+            left: 0;
+            width: 100%;
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+            z-index: 900;
+            overflow: hidden;
+        }
+
+        .dropdown div {
+            padding: 12px;
+            font-size: 13px;
+            text-align: center;
+            border-bottom: 1px solid #f8f8f8;
+            cursor: pointer;
+        }
+
+        .dropdown div:hover {
+            background: #fff0f5;
+        }
+
+        /* 4. 美女列表网格 */
+        .girl-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 6px;
+            padding: 6px 15px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        @media (min-width: 1024px) {
+            .girl-grid {
+                grid-template-columns: repeat(6, 1fr);
+                gap: 12px;
+            }
+        }
+
+        .girl-card {
+            background: #fff;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(255, 182, 193, 0.2);
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.2s, opacity 0.3s;
+        }
+
+        /* 隐藏不符合筛选的卡片 */
+        .girl-card.hidden {
+            display: none;
+        }
+
+        .img-box {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 1/1;
+        }
+
+        .img-box img {
+            width: 100%;
+            height: 100%;
+            max-height: 8rem;
+            min-height: 8rem;
+            object-fit: cover;
+            display: block;
+        }
+
+        /* 在线圆点 - 右下角慢闪 */
+        .online-led {
+            position: absolute;
+            bottom: 12px;
+            right: 8px;
+            width: 10px;
+            height: 10px;
+            background: var(--online-green);
+            border-radius: 50%;
+            box-shadow: 0 0 8px var(--online-green);
+            animation: pulse-led 3s infinite ease-in-out;
+        }
+
+        @keyframes pulse-led {
+
+            0%,
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+
+            50% {
+                opacity: 0.3;
+                transform: scale(0.8);
+            }
+        }
+
+        @media (min-width: 1024px) {
+            .img-box img {
+                min-height: 12rem;
+                /* 调整 PC 端图片的最小高度 */
+                max-height: 12rem;
+                /* 调整 PC 端图片的最大高度 */
+            }
+        }
+
+        .info-box {
+            padding: 8px;
+        }
+
+        .nickname {
+            font-size: 13px;
+            font-weight: bold;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .tag {
+            background: var(--primary-pink);
+            color: #fff;
+            font-size: 10px;
+            padding: 1px 5px;
+            border-radius: 5px;
+            margin-right: 4px;
+        }
+
+        .meta {
+            font-size: 10px;
+            color: #999;
+            margin-top: 4px;
+        }
+
+        /* 5. Marquee & Nav */
+        .marquee-bar {
+            position: fixed;
+            bottom: 90px;
+            left: 210px;
+            right: 15px;
+            background: rgb(227 85 144 / 70%);
+            /* Increased height to fit two lines */
+            height: 52px;
+            border-radius: 25px;
+            display: flex;
+            align-items: center;
+            padding: 0 8px;
+            color: #fff;
+            z-index: 998;
+            box-shadow: 0 4px 15px rgba(227, 85, 144, 0.4);
+            backdrop-filter: blur(5px);
+            overflow: hidden;
+        }
+
+        .marquee-bar img {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            border: 2px solid #fff;
+            margin-right: 10px;
+            flex-shrink: 0;
+            object-fit: cover;
+        }
+
+        /* Container for the Two Rows */
+        .mq-column {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        /* Row 1: Scrolling Text */
+        .mq-window {
+            width: 100%;
+            height: 20px;
+            overflow: hidden;
+            white-space: nowrap;
+            /* Fade effect on edges */
+            mask-image: linear-gradient(to right, transparent, black 5%, black 95%, transparent);
+            -webkit-mask-image: linear-gradient(to right, transparent, black 5%, black 95%, transparent);
+            display: flex;
+            align-items: center;
+        }
+
+        .mq-content {
+            display: inline-block;
+            white-space: nowrap;
+            will-change: transform;
+            /* Animation controlled by JS */
+        }
+
+        .mq-item {
+            display: inline-block;
+            padding-right: 40px;
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        /* Row 2: Fixed Text */
+        .mq-fixed {
+            height: 18px;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.9);
+            display: flex;
+            align-items: center;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+
+        .side-btn {
+            position: fixed;
+            right: 0;
+            top: 42%;
+            background: #222;
+            color: #fff;
+            padding: 12px 6px;
+            border-radius: 12px 0 0 12px;
+            writing-mode: vertical-lr;
+            font-size: 12px;
+            cursor: pointer;
+            z-index: 1001;
+            box-shadow: -2px 0 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            height: 85px;
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(15px);
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            border-top: 1px solid #eee;
+            z-index: 1000;
+        }
+
+        .nav-link {
+            text-align: center;
+            color: #333;
+            text-decoration: none;
+            font-size: 11px;
+        }
+
+        .nav-link img {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            border: 2px solid var(--primary-pink);
+            margin-bottom: 2px;
+        }
+
+        /* 自定义弹窗样式 */
+        .modal-overlay {
+            display: none;
+            /* 默认隐藏 */
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(8px);
+            /* 磨砂玻璃背景 */
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal-box {
+            width: 85%;
+            max-width: 320px;
+            background: linear-gradient(135deg, #ffffff 0%, #fff0f5 100%);
+            border-radius: 24px;
+            padding: 30px 20px;
+            position: relative;
+            text-align: center;
+            box-shadow: 0 20px 40px rgba(255, 126, 179, 0.3);
+            transform: scale(0.8);
+            animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes popIn {
+            from {
+                transform: scale(0.8);
+                opacity: 0;
+            }
+
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            width: 30px;
+            height: 30px;
+            font-size: 24px;
+            color: #999;
+            cursor: pointer;
+            line-height: 30px;
+        }
+
+        .modal-icon {
+            font-size: 50px;
+            margin-bottom: 15px;
+            filter: drop-shadow(0 5px 10px rgba(255, 126, 179, 0.3));
+        }
+
+        .modal-box h3 {
+            color: #333;
+            margin-bottom: 12px;
+            font-size: 18px;
+        }
+
+        .modal-box p {
+            color: #666;
+            font-size: 14px;
+            line-height: 1.6;
+            margin-bottom: 25px;
+            padding: 0 10px;
+        }
+
+        .modal-btn {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 50px;
+            background: linear-gradient(90deg, #ff7eb3 0%, #ff758c 100%);
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+            box-shadow: 0 8px 15px rgba(255, 117, 140, 0.3);
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .modal-btn:active {
+            transform: scale(0.95);
+        }
+
+        /* 搜索弹窗全屏遮罩 */
+        .search-modal-mask {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 192, 203, 0.3);
+            /* 淡淡的粉色半透明 */
+            backdrop-filter: blur(15px);
+            /* 毛玻璃核Kokoro效果 */
+            -webkit-backdrop-filter: blur(15px);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+            animation: fadeIn 0.4s ease;
+        }
+
+        /* 搜索容器 */
+        .search-container {
+            width: 90%;
+            max-width: 350px;
+            background: rgba(255, 255, 255, 0.6);
+            /* 半透明白色 */
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            border-radius: 30px;
+            padding: 35px 25px;
+            position: relative;
+            box-shadow: 0 20px 50px rgba(255, 126, 179, 0.2);
+            text-align: center;
+            animation: modalSlideUp 0.5s cubic-bezier(0.18, 0.89, 0.32, 1.28) forwards;
+        }
+
+        @keyframes modalSlideUp {
+            from {
+                transform: translateY(50px);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        /* 关闭按钮 (X) */
+        .search-close {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            font-size: 28px;
+            color: #ff7eb3;
+            cursor: pointer;
+            font-weight: 300;
+            transition: transform 0.3s;
+        }
+
+        .search-close:hover {
+            transform: rotate(90deg);
+        }
+
+        .search-header h3 {
+            color: #333;
+            font-size: 20px;
+            margin-bottom: 5px;
+            letter-spacing: 1px;
+        }
+
+        .search-header p {
+            color: #888;
+            font-size: 12px;
+            margin-bottom: 25px;
+        }
+
+        /* 输入框包装层 */
+        .search-input-wrapper {
+            position: relative;
+            margin-bottom: 25px;
+        }
+
+        .search-input-wrapper input {
+            width: 100%;
+            padding: 15px 15px 15px 45px;
+            border: 2px solid rgba(255, 126, 179, 0.2);
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 15px;
+            outline: none;
+            font-size: 15px;
+            color: #555;
+            transition: all 0.3s;
+        }
+
+        .search-input-wrapper input:focus {
+            border-color: #ff7eb3;
+            box-shadow: 0 0 15px rgba(255, 126, 179, 0.2);
+        }
+
+        .input-icon {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 18px;
+            opacity: 0.5;
+        }
+
+        /* 按钮区域 */
+        .search-actions {
+            display: flex;
+            gap: 12px;
+        }
+
+        .btn-cancel {
+            flex: 1;
+            padding: 12px;
+            border: 1px solid #ffcada;
+            background: rgba(255, 255, 255, 0.5);
+            color: #ff7eb3;
+            border-radius: 50px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .btn-search {
+            flex: 2;
+            padding: 12px;
+            border: none;
+            background: linear-gradient(90deg, #ff7eb3 0%, #ff758c 100%);
+            color: white;
+            border-radius: 50px;
+            font-size: 14px;
+            font-weight: bold;
+            box-shadow: 0 8px 15px rgba(255, 117, 140, 0.3);
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .btn-search:active {
+            transform: scale(0.95);
+        }
+
+        /* 视频弹窗特有样式 */
+        .video-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            z-index: 3000;
+            justify-content: center;
+            align-items: center;
+            animation: fadeIn 0.4s ease;
+        }
+
+        .video-box {
+            width: 90%;
+            max-width: 340px;
+            /* 模拟手机竖屏比例 */
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 25px;
+            padding: 10px;
+            position: relative;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+            animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+
+        .video-close {
+            position: absolute;
+            top: -45px;
+            right: 0;
+            width: 35px;
+            height: 35px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            color: #fff;
+            font-size: 24px;
+            text-align: center;
+            line-height: 32px;
+            cursor: pointer;
+            border: 1px solid rgba(255, 255, 255, 0.5);
+        }
+
+        .video-content {
+            width: 100%;
+            border-radius: 20px;
+            overflow: hidden;
+            background: #000;
+            line-height: 0;
+        }
+
+        .video-content video {
+            width: 100%;
+            height: auto;
+            max-height: 70vh;
+        }
+
+        .video-bottom {
+            padding: 15px 5px 5px 5px;
+        }
+
+        .img-container {
+            position: relative;
+            display: inline-block;
+        }
+
+        /* 梦幻顶部区域样式 */
+        .hero-wrapper {
+            position: relative;
+            width: 100%;
+            /* 高度从 850px 降至约 580px - 600px，减少了约 30% */
+            min-height: 580px;
+            background: linear-gradient(180deg, #fff5f8 0%, #ffdee9 40%, #fbdae8 100%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        /* 背景发光氛围 */
+        .hero-glow {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 100vw;
+            height: 100%;
+            background: radial-gradient(circle, rgba(255, 126, 179, 0.4) 0%, rgba(255, 255, 255, 0) 70%);
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        /* 1. 标题专用区 (Safe Zone) */
+        .title-section {
+            position: relative;
+            z-index: 100;
+            width: 100%;
+            padding: 40px 20px 20px 20px;
+            /* 缩小间距 */
+            text-align: center;
+        }
+
+        .giant-gradient-title {
+            font-size: clamp(2rem, 8vw, 4.5rem);
+            /* 稍微缩小一点字号以适配更紧凑的布局 */
+            font-weight: 900;
+            line-height: 1.1;
+            background: linear-gradient(135deg, #ff007a 0%, #ff7eb3 50%, #ee0979 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            filter: drop-shadow(0 8px 12px rgba(255, 126, 179, 0.3));
+            letter-spacing: -1px;
+        }
+
+        /* 2. 头像互动舞台区 (高度压缩 30%) */
+        .interaction-stage {
+            position: relative;
+            width: 100%;
+            max-width: 950px;
+            height: 380px;
+            /* 高度从 500px+ 压缩至 380px */
+            z-index: 50;
+            margin-top: -10px;
+        }
+
+        /* 放射脉冲中Kokoro */
+        .radar-center {
+            position: absolute;
+            top: 45%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 16px;
+            height: 16px;
+        }
+
+        .radar-point-dot {
+            width: 100%;
+            height: 100%;
+            background: #ff7eb3;
+            border-radius: 50%;
+            box-shadow: 0 0 20px #ff7eb3;
+        }
+
+        .radar-wave {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            border: 1px solid rgba(255, 126, 179, 0.25);
+            border-radius: 50%;
+            animation: radarWaveAnim 4s infinite linear;
+            pointer-events: none;
+        }
+
+        .wave-1 {
+            width: 150px;
+            height: 150px;
+            animation-delay: 0s;
+        }
+
+        .wave-2 {
+            width: 300px;
+            height: 300px;
+            animation-delay: 1.3s;
+        }
+
+        .wave-3 {
+            width: 500px;
+            height: 500px;
+            animation-delay: 2.6s;
+        }
+
+        @keyframes radarWaveAnim {
+            0% {
+                transform: translate(-50%, -50%) scale(0.1);
+                opacity: 1;
+            }
+
+            100% {
+                transform: translate(-50%, -50%) scale(1.5);
+                opacity: 0;
+            }
+        }
+
+        /* 互动头像节点 */
+        .avatar-node {
+            position: absolute;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .avatar-node:hover {
+            transform: scale(1.1) translateY(-5px);
+            z-index: 100;
+        }
+
+        .avatar-img-wrap {
+            position: relative;
+            width: 58px;
+            height: 58px;
+            /* 稍微缩小头像以适配紧凑高度 */
+            border-radius: 50%;
+            border: 3px solid #fff;
+            box-shadow: 0 6px 15px rgba(255, 126, 179, 0.3);
+            background: #fff;
+        }
+
+        .avatar-img-wrap img {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        /* 在线发光点 */
+        .led-online {
+            position: absolute;
+            bottom: 1px;
+            right: 1px;
+            width: 12px;
+            height: 12px;
+            background: #00ff88;
+            border: 2px solid #fff;
+            border-radius: 50%;
+            box-shadow: 0 0 10px #00ff88;
+        }
+
+        /* 距离标签 */
+        .distance-btn {
+            margin-top: 6px;
+            background: linear-gradient(90deg, #ff7eb3, #ff758c);
+            color: #fff;
+            font-size: 10px;
+            font-weight: bold;
+            padding: 2px 10px;
+            border-radius: 20px;
+        }
+
+        /* PC 悬浮卡片 */
+        .pop-info {
+            position: absolute;
+            bottom: 115%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(255, 255, 255, 0.95);
+            padding: 4px 10px;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            opacity: 0;
+            pointer-events: none;
+            transition: 0.3s;
+            font-size: 12px;
+            white-space: nowrap;
+            color: #333;
+            z-index: 110;
+        }
+
+        .pop-info b {
+            color: #ff007a;
+        }
+
+        @media (min-width: 1024px) {
+            .avatar-node:hover .pop-info {
+                opacity: 1;
+                bottom: 125%;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .hero-wrapper {
+                min-height: 380px;
+            }
+
+            .interaction-stage {
+                height: 245px;
+            }
+
+            .avatar-img-wrap {
+                width: 50px;
+                height: 50px;
+            }
+
+            .giant-gradient-title {
+                font-size: 1.8rem;
+            }
+        }
+    </style>
+
+
+<script type="text/javascript">
+    function trackCustomEvent(eventName) {
+        console.log('Sending Event:', eventName);
+        if (typeof fbq === 'function') fbq('track', eventName);
+        if (typeof ttq === 'function') ttq.track(eventName);
+        if (typeof gtag === 'function') gtag('event', eventName);
+    }
+
+    if (typeof OpenInstall === 'function') {
+        var urlParams = new URLSearchParams(window.location.search);
+        var channelCode = urlParams.get('channelCode') || urlParams.get('channelcode');
+
+        var data = OpenInstall.parseUrlParams();
+        if (channelCode) {
+            data.channelCode = channelCode;
+        }
+
+        new OpenInstall({
+            appKey: "xx7hwq",
+            onready: function() {
+                var m = this;
+                m.schemeWakeup();
+
+                function bindButtons() {
+                    var btns = document.querySelectorAll('.conversion-btn');
+                    btns.forEach(function(btn) {
+                        btn.onclick = function() {
+                            trackCustomEvent('addToCart');
+                            // Facebook Pixel - 触发下载/安装事件
+            if (typeof fbq === 'function') {
+                fbq('track', 'Lead');
+                fbq('trackCustom', 'AppDownload', {
+                    channel_code: new URLSearchParams(window.location.search).get('channelCode') || 'unknown'
+                });
+            }
+            m.wakeupOrInstall();
+                            return false;
+                        };
+                    });
+                }
+
+                if (document.readyState === 'loading') {
+                    document.addEventListener('DOMContentLoaded', bindButtons);
+                } else {
+                    bindButtons();
+                }
+            }
+        }, data);
+    } else {
+        console.warn('OpenInstall is not available');
+    }
+</script>
+
+    <!-- Facebook Pixel Code -->
+    <script>
+    !function(f,b,e,v,n,t,s)
+    {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+    n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+    if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+    n.queue=[];t=b.createElement(e);t.async=!0;
+    t.src=v;s=b.getElementsByTagName(e)[0];
+    s.parentNode.insertBefore(t,s)}(window, document,'script',
+    'https://connect.facebook.net/en_US/fbevents.js');
+    fbq('init', '123456789');
+    fbq('track', 'PageView');
+    </script>
+    <noscript><img height="1" width="1" style="display:none"
+    src="https://www.facebook.com/tr?id=123456789&ev=PageView&noscript=1"
+    /></noscript>
+    <!-- End Facebook Pixel Code -->
+</head>
+
+<body>
+
+    <div class="bg-glow glow-1"></div>
+    <div class="bg-glow glow-2"></div>
+
+    <!-- 顶部搜索层 -->
+    <div id="search-overlay">
+        <div style="display:flex; gap:10px;">
+            <input type="text" id="searchInput" placeholder="输入关键词搜索..."
+                style="flex:1; border:1px solid #eee; border-radius:20px; padding:0 15px; outline:none;">
+            <button onclick="toggleSearch()"
+                style="background:var(--primary-pink); color:#fff; border:none; border-radius:20px; padding:0 18px; cursor:pointer;">取消</button>
+        </div>
+    </div>
+
+    <header>
+        <div class="top-nav">
+            <span onclick="window.location.href='./index.html'">首页</span>
+            <span class="active" onclick="switchMainTab(this, 'all')">附近</span>
+            <span onclick="switchMainTab(this, 'featured')">精选</span>
+            <span onclick="switchMainTab(this, 'recommend')">推荐</span>
+        </div>
+        <!-- 两个图标按钮 -->
+        <div style="display: flex; gap: 12px;">
+            <!-- 视频图标 -->
+            <div class="search-btn" onclick="openVideo('assets/uploads/upload_6970a093ac77c.mp4')">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ff7eb3" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M23 7l-7 5 7 5V7z"></path>
+                    <rect x="1" y="5" width="15" height="14" rx="2" ry="2"></rect>
+                </svg>
+            </div>
+            <!-- 搜索图标 -->
+            <div class="search-btn" onclick="toggleSearch()">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#555" stroke-width="2.5"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="11" cy="11" r="8"></circle>
+                    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                </svg>
+            </div>
+        </div>
+    </header>
+    <!-- 梦幻顶部展示区 -->
+    <section class="hero-wrapper">
+        <div class="hero-glow"></div>
+
+        <!-- 1. 标题专用区 (Safe Zone) -->
+        <div class="title-section">
+            <h1 class="giant-gradient-title">附近华人交友社区</h1>
+        </div>
+
+        <!-- 2. 头像互动舞台区 (压缩 30% 高度后的坐标布局) -->
+        <div class="interaction-stage">
+            <!-- 放射脉冲 -->
+            <div class="radar-center">
+                <div class="radar-point-dot"></div>
+                <div class="radar-wave wave-1"></div>
+                <div class="radar-wave wave-2"></div>
+                <div class="radar-wave wave-3"></div>
+            </div>
+
+            <!-- 9个头像随机分布 (坐标已重新计算以适配更扁的区域) -->
+            <div class="avatar-node" style="top: 18%; left: 25%;" onclick="tip()">
+                <div class="pop-info"><b>林千夏</b> 22岁</div>
+                <div class="avatar-img-wrap"><img src="assets/uploads/upload_697121580b98f.jpg">
+                    <div class="led-online"></div>
+                </div>
+                <div class="distance-btn">1.2公里</div>
+            </div>
+
+            <div class="avatar-node" style="top: 17%; left: 45%;" onclick="tip()">
+                <div class="pop-info"><b>余笙</b> 24岁</div>
+                <div class="avatar-img-wrap"><img src="assets/uploads/upload_6971214523c6e.jpg">
+                    <div class="led-online"></div>
+                </div>
+                <div class="distance-btn">0.8公里</div>
+            </div>
+
+            <div class="avatar-node" style="top: 22%; right: 13%;" onclick="tip()">
+                <div class="pop-info"><b>晨鹿</b> 20岁</div>
+                <div class="avatar-img-wrap"><img src="assets/uploads/upload_69712131707a5.jpg">
+                    <div class="led-online"></div>
+                </div>
+                <div class="distance-btn">1.5公里</div>
+            </div>
+
+            <div class="avatar-node" style="top: 38%; left: 5%;" onclick="tip()">
+                <div class="pop-info"><b>晴晴</b> 26岁</div>
+                <div class="avatar-img-wrap"><img src="assets/uploads/upload_697120ef70b8c.jpg">
+                    <div class="led-online"></div>
+                </div>
+                <div class="distance-btn">1.7公里</div>
+            </div>
+
+            <div class="avatar-node" style="top: 35%; right: 35%;" onclick="tip()">
+                <div class="pop-info"><b>樱桃提醒</b> 25岁</div>
+                <div class="avatar-img-wrap"><img src="assets/uploads/upload_697120a787f4c.jpg">
+                    <div class="led-online"></div>
+                </div>
+                <div class="distance-btn">1.1公里</div>
+            </div>
+
+            <div class="avatar-node" style="top: 47%; left: 32%;" onclick="tip()">
+                <div class="pop-info"><b>薇洛</b> 21岁</div>
+                <div class="avatar-img-wrap"><img src="assets/uploads/upload_697258b5ebb1c.jpg">
+                    <div class="led-online"></div>
+                </div>
+                <div class="distance-btn">0.5公里</div>
+            </div>
+
+            <div class="avatar-node" style="bottom: 12%; left: 12%;" onclick="tip()">
+                <div class="pop-info"><b>微风</b> 22岁</div>
+                <div class="avatar-img-wrap"><img src="assets/uploads/upload_6972589b6b8c8.jpg">
+                    <div class="led-online"></div>
+                </div>
+                <div class="distance-btn">1.9公里</div>
+            </div>
+
+            <div class="avatar-node" style="bottom: 8%; right: 15%;" onclick="tip()">
+                <div class="pop-info"><b>线下恋人</b> 23岁</div>
+                <div class="avatar-img-wrap"><img src="assets/uploads/upload_69725874efa0c.jpg">
+                    <div class="led-online"></div>
+                </div>
+                <div class="distance-btn">2.1公里</div>
+            </div>
+
+            <div class="avatar-node" style="bottom: 5%; left: 45%;" onclick="tip()">
+                <div class="pop-info"><b>崔北美</b> 24岁</div>
+                <div class="avatar-img-wrap"><img src="assets/uploads/upload_6972585133f6d.jpg">
+                    <div class="led-online"></div>
+                </div>
+                <div class="distance-btn">1.3公里</div>
+            </div>
+        </div>
+    </section>
+    <!-- 筛选功能区 -->
+    <div class="filter-area">
+        <div class="filter-item">
+            <button class="filter-trigger" onclick="window.location.href='./index.html'">在线</button>
+            <div id="d-city" class="dropdown">
+                <div onclick="applyFilter('city', 'all')">全部地区</div>
+                                                <div onclick="applyFilter('city', '北海道')">
+                    北海道                </div>
+                                <div onclick="applyFilter('city', '岩手')">
+                    岩手                </div>
+                                <div onclick="applyFilter('city', '青森')">
+                    青森                </div>
+                                            </div>
+        </div>
+        <div class="filter-item">
+            <button class="filter-trigger" onclick="sortByDistance()">附近</button>
+            <!--<div id="d-gender" class="dropdown">-->
+            <!--    <div onclick="applyFilter('gender', 'all')">制限なし</div>-->
+            <!--    <div onclick="applyFilter('gender', '女')">女子だけを見る</div>-->
+            <!--    <div onclick="applyFilter('gender', '男')">男子だけを見る</div>-->
+            <!--</div>-->
+        </div>
+        <div class="filter-item">
+            <button class="filter-trigger" onclick="toggleDrop('d-age')">年龄范围</button>
+            <div id="d-age" class="dropdown">
+                <div onclick="applyFilter('age', 'all')">不限</div>
+                <div onclick="applyFilter('age', '18-22')">18-22岁</div>
+                <div onclick="applyFilter('age', '23-28')">23-28岁</div>
+                <div onclick="applyFilter('age', '29-35')">29-35岁</div>
+                <div onclick="applyFilter('age', '36')">36岁以上</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 20个静态 HTML 数据列表 (后台循环此处) -->
+    <!-- data-lat/lng: 用于距离排序 -->
+    <!-- data-type: 'featured' 或 'recommend' -->
+    <!-- data-city / data-gender / data-age: 用于筛选 -->
+    <div class="girl-grid" id="mainGrid">
+                <div class="girl-card" data-type="recommend" data-city=""
+            data-juli="2.5" data-gender=""
+            data-age="33" onclick="tip()">
+
+            <div class="img-box">
+                <img src="assets/uploads/cf_6973a8c22f125.jpg" loading="lazy">
+                                <div class="online-led"></div>
+                            </div>
+
+            <div class="info-box">
+                <div class="nickname">
+                    <span class="tag">
+                        ♀                        33                    </span>
+                    苏琳                </div>
+                <!-- Custom text fields display -->
+                <div class="meta" style="margin-top:5px;">
+
+                    <span class="km-text">
+                        2.5公里
+                    </span> ·
+                     浏览
+                </div>
+            </div>
+        </div>
+                <div class="girl-card" data-type="recommend" data-city=""
+            data-juli="7" data-gender=""
+            data-age="28" onclick="tip()">
+
+            <div class="img-box">
+                <img src="assets/uploads/cf_6973ae2b2a2fa.jpg" loading="lazy">
+                                <div class="online-led"></div>
+                            </div>
+
+            <div class="info-box">
+                <div class="nickname">
+                    <span class="tag">
+                        ♀                        28                    </span>
+                    露娜                </div>
+                <!-- Custom text fields display -->
+                <div class="meta" style="margin-top:5px;">
+
+                    <span class="km-text">
+                        7公里
+                    </span> ·
+                     浏览
+                </div>
+            </div>
+        </div>
+                <div class="girl-card" data-type="recommend" data-city=""
+            data-juli="12" data-gender=""
+            data-age="33" onclick="tip()">
+
+            <div class="img-box">
+                <img src="assets/uploads/cf_6973a8fbdcd24.jpg" loading="lazy">
+                                <div class="online-led"></div>
+                            </div>
+
+            <div class="info-box">
+                <div class="nickname">
+                    <span class="tag">
+                        ♀                        33                    </span>
+                    薇洛                </div>
+                <!-- Custom text fields display -->
+                <div class="meta" style="margin-top:5px;">
+
+                    <span class="km-text">
+                        12公里
+                    </span> ·
+                     浏览
+                </div>
+            </div>
+        </div>
+                <div class="girl-card" data-type="featured" data-city=""
+            data-juli="4" data-gender="女"
+            data-age="25" onclick="tip()">
+
+            <div class="img-box">
+                <img src="assets/uploads/cf_697373d63c28d.jpg" loading="lazy">
+                                <div class="online-led"></div>
+                            </div>
+
+            <div class="info-box">
+                <div class="nickname">
+                    <span class="tag">
+                        ♀                        25                    </span>
+                    咲希                 </div>
+                <!-- Custom text fields display -->
+                <div class="meta" style="margin-top:5px;">
+
+                    <span class="km-text">
+                        4公里
+                    </span> ·
+                     浏览
+                </div>
+            </div>
+        </div>
+                <div class="girl-card" data-type="recommend" data-city=""
+            data-juli="15" data-gender=""
+            data-age="32" onclick="tip()">
+
+            <div class="img-box">
+                <img src="assets/uploads/cf_6973aa051cba9.jpg" loading="lazy">
+                                <div class="online-led"></div>
+                            </div>
+
+            <div class="info-box">
+                <div class="nickname">
+                    <span class="tag">
+                        ♀                        32                    </span>
+                    桃子                </div>
+                <!-- Custom text fields display -->
+                <div class="meta" style="margin-top:5px;">
+
+                    <span class="km-text">
+                        15公里
+                    </span> ·
+                     浏览
+                </div>
+            </div>
+        </div>
+                <div class="girl-card" data-type="recommend" data-city=""
+            data-juli="9" data-gender=""
+            data-age="26" onclick="tip()">
+
+            <div class="img-box">
+                <img src="assets/uploads/cf_6973ab22c4fa8.jpg" loading="lazy">
+                                <div class="online-led"></div>
+                            </div>
+
+            <div class="info-box">
+                <div class="nickname">
+                    <span class="tag">
+                        ♀                        26                    </span>
+                    小远                </div>
+                <!-- Custom text fields display -->
+                <div class="meta" style="margin-top:5px;">
+
+                    <span class="km-text">
+                        9公里
+                    </span> ·
+                     浏览
+                </div>
+            </div>
+        </div>
+                <div class="girl-card" data-type="featured" data-city=""
+            data-juli="3.5" data-gender="女"
+            data-age="26" onclick="tip()">
+
+            <div class="img-box">
+                <img src="assets/uploads/cf_6973738d1e972.jpg" loading="lazy">
+                                <div class="online-led"></div>
+                            </div>
+
+            <div class="info-box">
+                <div class="nickname">
+                    <span class="tag">
+                        ♀                        26                    </span>
+                    葵                </div>
+                <!-- Custom text fields display -->
+                <div class="meta" style="margin-top:5px;">
+
+                    <span class="km-text">
+                        3.5公里
+                    </span> ·
+                     浏览
+                </div>
+            </div>
+        </div>
+                <div class="girl-card" data-type="featured" data-city=""
+            data-juli="11" data-gender="女"
+            data-age="20" onclick="tip()">
+
+            <div class="img-box">
+                <img src="assets/uploads/cf_69737225b3c8c.jpg" loading="lazy">
+                                <div class="online-led"></div>
+                            </div>
+
+            <div class="info-box">
+                <div class="nickname">
+                    <span class="tag">
+                        ♀                        20                    </span>
+                    玲奈                  </div>
+                <!-- Custom text fields display -->
+                <div class="meta" style="margin-top:5px;">
+
+                    <span class="km-text">
+                        11公里
+                    </span> ·
+                     浏览
+                </div>
+            </div>
+        </div>
+                <div class="girl-card" data-type="featured" data-city=""
+            data-juli="5.1" data-gender="女"
+            data-age="21" onclick="tip()">
+
+            <div class="img-box">
+                <img src="assets/uploads/cf_69735fc06c6eb.jpg" loading="lazy">
+                                <div class="online-led"></div>
+                            </div>
+
+            <div class="info-box">
+                <div class="nickname">
+                    <span class="tag">
+                        ♀                        21                    </span>
+                    樱花                   </div>
+                <!-- Custom text fields display -->
+                <div class="meta" style="margin-top:5px;">
+
+                    <span class="km-text">
+                        5.1公里
+                    </span> ·
+                     浏览
+                </div>
+            </div>
+        </div>
+                <div class="girl-card" data-type="recommend" data-city=""
+            data-juli="2" data-gender=""
+            data-age="29" onclick="tip()">
+
+            <div class="img-box">
+                <img src="assets/uploads/cf_6973a6dca084e.jpg" loading="lazy">
+                                <div class="online-led"></div>
+                            </div>
+
+            <div class="info-box">
+                <div class="nickname">
+                    <span class="tag">
+                        ♀                        29                    </span>
+                    柚子                 </div>
+                <!-- Custom text fields display -->
+                <div class="meta" style="margin-top:5px;">
+
+                    <span class="km-text">
+                        2公里
+                    </span> ·
+                     浏览
+                </div>
+            </div>
+        </div>
+                <div class="girl-card" data-type="featured" data-city="岩手"
+            data-juli="15" data-gender="女"
+            data-age="27" onclick="tip()">
+
+            <div class="img-box">
+                <img src="assets/uploads/cf_69712db036b9d.jpg" loading="lazy">
+                                <div class="online-led"></div>
+                            </div>
+
+            <div class="info-box">
+                <div class="nickname">
+                    <span class="tag">
+                        ♀                        27                    </span>
+                    绫乃                </div>
+                <!-- Custom text fields display -->
+                <div class="meta" style="margin-top:5px;">
+
+                    <span class="km-text">
+                        15公里
+                    </span> ·
+                     浏览
+                </div>
+            </div>
+        </div>
+                <div class="girl-card" data-type="recommend" data-city=""
+            data-juli="3" data-gender=""
+            data-age="33" onclick="tip()">
+
+            <div class="img-box">
+                <img src="assets/uploads/cf_6973a79c4773e.jpg" loading="lazy">
+                                <div class="online-led"></div>
+                            </div>
+
+            <div class="info-box">
+                <div class="nickname">
+                    <span class="tag">
+                        ♀                        33                    </span>
+                    玛拉                </div>
+                <!-- Custom text fields display -->
+                <div class="meta" style="margin-top:5px;">
+
+                    <span class="km-text">
+                        3公里
+                    </span> ·
+                     浏览
+                </div>
+            </div>
+        </div>
+                <div class="girl-card" data-type="featured" data-city=""
+            data-juli="1.9" data-gender="女"
+            data-age="19" onclick="tip()">
+
+            <div class="img-box">
+                <img src="assets/uploads/cf_697363d695115.jpg" loading="lazy">
+                                <div class="online-led"></div>
+                            </div>
+
+            <div class="info-box">
+                <div class="nickname">
+                    <span class="tag">
+                        ♀                        19                    </span>
+                    明日香                 </div>
+                <!-- Custom text fields display -->
+                <div class="meta" style="margin-top:5px;">
+
+                    <span class="km-text">
+                        1.9公里
+                    </span> ·
+                     浏览
+                </div>
+            </div>
+        </div>
+                <div class="girl-card" data-type="featured" data-city="北海道"
+            data-juli="13" data-gender="女"
+            data-age="20" onclick="tip()">
+
+            <div class="img-box">
+                <img src="assets/uploads/cf_696fe4f45e209.jpg" loading="lazy">
+                                <div class="online-led"></div>
+                            </div>
+
+            <div class="info-box">
+                <div class="nickname">
+                    <span class="tag">
+                        ♀                        20                    </span>
+                    安娜                </div>
+                <!-- Custom text fields display -->
+                <div class="meta" style="margin-top:5px;">
+
+                    <span class="km-text">
+                        13公里
+                    </span> ·
+                     浏览
+                </div>
+            </div>
+        </div>
+                <div class="girl-card" data-type="recommend" data-city=""
+            data-juli="1.5" data-gender=""
+            data-age="31" onclick="tip()">
+
+            <div class="img-box">
+                <img src="assets/uploads/cf_6973aae463da4.jpg" loading="lazy">
+                                <div class="online-led"></div>
+                            </div>
+
+            <div class="info-box">
+                <div class="nickname">
+                    <span class="tag">
+                        ♀                        31                    </span>
+                     草莓                </div>
+                <!-- Custom text fields display -->
+                <div class="meta" style="margin-top:5px;">
+
+                    <span class="km-text">
+                        1.5公里
+                    </span> ·
+                     浏览
+                </div>
+            </div>
+        </div>
+                <div class="girl-card" data-type="recommend" data-city=""
+            data-juli="1.9" data-gender=""
+            data-age="27" onclick="tip()">
+
+            <div class="img-box">
+                <img src="assets/uploads/cf_6973943a0af23.jpg" loading="lazy">
+                                <div class="online-led"></div>
+                            </div>
+
+            <div class="info-box">
+                <div class="nickname">
+                    <span class="tag">
+                        ♀                        27                    </span>
+                    怜音                </div>
+                <!-- Custom text fields display -->
+                <div class="meta" style="margin-top:5px;">
+
+                    <span class="km-text">
+                        1.9公里
+                    </span> ·
+                     浏览
+                </div>
+            </div>
+        </div>
+                <div class="girl-card" data-type="recommend" data-city=""
+            data-juli="9" data-gender=""
+            data-age="30" onclick="tip()">
+
+            <div class="img-box">
+                <img src="assets/uploads/cf_69739c56a432f.jpg" loading="lazy">
+                                <div class="online-led"></div>
+                            </div>
+
+            <div class="info-box">
+                <div class="nickname">
+                    <span class="tag">
+                        ♀                        30                    </span>
+                    可可                 </div>
+                <!-- Custom text fields display -->
+                <div class="meta" style="margin-top:5px;">
+
+                    <span class="km-text">
+                        9公里
+                    </span> ·
+                     浏览
+                </div>
+            </div>
+        </div>
+                <div class="girl-card" data-type="featured" data-city=""
+            data-juli="6.8" data-gender="女"
+            data-age="26" onclick="tip()">
+
+            <div class="img-box">
+                <img src="assets/uploads/cf_69737534c04d2.jpg" loading="lazy">
+                                <div class="online-led"></div>
+                            </div>
+
+            <div class="info-box">
+                <div class="nickname">
+                    <span class="tag">
+                        ♀                        26                    </span>
+                    咪咪                </div>
+                <!-- Custom text fields display -->
+                <div class="meta" style="margin-top:5px;">
+
+                    <span class="km-text">
+                        6.8公里
+                    </span> ·
+                     浏览
+                </div>
+            </div>
+        </div>
+                <div class="girl-card" data-type="recommend" data-city=""
+            data-juli="14" data-gender=""
+            data-age="29" onclick="tip()">
+
+            <div class="img-box">
+                <img src="assets/uploads/cf_6973a73a44840.jpg" loading="lazy">
+                                <div class="online-led"></div>
+                            </div>
+
+            <div class="info-box">
+                <div class="nickname">
+                    <span class="tag">
+                        ♀                        29                    </span>
+                    星野                </div>
+                <!-- Custom text fields display -->
+                <div class="meta" style="margin-top:5px;">
+
+                    <span class="km-text">
+                        14公里
+                    </span> ·
+                     浏览
+                </div>
+            </div>
+        </div>
+                <div class="girl-card" data-type="recommend" data-city=""
+            data-juli="2.5" data-gender=""
+            data-age="30" onclick="tip()">
+
+            <div class="img-box">
+                <img src="assets/uploads/cf_6973ab96a1836.jpg" loading="lazy">
+                                <div class="online-led"></div>
+                            </div>
+
+            <div class="info-box">
+                <div class="nickname">
+                    <span class="tag">
+                        ♀                        30                    </span>
+                    月见                </div>
+                <!-- Custom text fields display -->
+                <div class="meta" style="margin-top:5px;">
+
+                    <span class="km-text">
+                        2.5公里
+                    </span> ·
+                     浏览
+                </div>
+            </div>
+        </div>
+                <div class="girl-card" data-type="featured" data-city=""
+            data-juli="6" data-gender="女"
+            data-age="24" onclick="tip()">
+
+            <div class="img-box">
+                <img src="assets/uploads/cf_6973730501552.jpg" loading="lazy">
+                                <div class="online-led"></div>
+                            </div>
+
+            <div class="info-box">
+                <div class="nickname">
+                    <span class="tag">
+                        ♀                        24                    </span>
+                    咲夜                  </div>
+                <!-- Custom text fields display -->
+                <div class="meta" style="margin-top:5px;">
+
+                    <span class="km-text">
+                        6公里
+                    </span> ·
+                     浏览
+                </div>
+            </div>
+        </div>
+                <div class="girl-card" data-type="featured" data-city=""
+            data-juli="2.4" data-gender="女"
+            data-age="20" onclick="tip()">
+
+            <div class="img-box">
+                <img src="assets/uploads/cf_697362bdc86c3.jpg" loading="lazy">
+                                <div class="online-led"></div>
+                            </div>
+
+            <div class="info-box">
+                <div class="nickname">
+                    <span class="tag">
+                        ♀                        20                    </span>
+                    七海                </div>
+                <!-- Custom text fields display -->
+                <div class="meta" style="margin-top:5px;">
+
+                    <span class="km-text">
+                        2.4公里
+                    </span> ·
+                     浏览
+                </div>
+            </div>
+        </div>
+                <div class="girl-card" data-type="featured" data-city=""
+            data-juli="13" data-gender="女"
+            data-age="21" onclick="tip()">
+
+            <div class="img-box">
+                <img src="assets/uploads/cf_6973728514305.jpg" loading="lazy">
+                                <div class="online-led"></div>
+                            </div>
+
+            <div class="info-box">
+                <div class="nickname">
+                    <span class="tag">
+                        ♀                        21                    </span>
+                    彩香                  </div>
+                <!-- Custom text fields display -->
+                <div class="meta" style="margin-top:5px;">
+
+                    <span class="km-text">
+                        13公里
+                    </span> ·
+                     浏览
+                </div>
+            </div>
+        </div>
+                <div class="girl-card" data-type="recommend" data-city=""
+            data-juli="2.1" data-gender=""
+            data-age="26" onclick="tip()">
+
+            <div class="img-box">
+                <img src="assets/uploads/cf_697394149874d.jpg" loading="lazy">
+                                <div class="online-led"></div>
+                            </div>
+
+            <div class="info-box">
+                <div class="nickname">
+                    <span class="tag">
+                        ♀                        26                    </span>
+                    千夏                  </div>
+                <!-- Custom text fields display -->
+                <div class="meta" style="margin-top:5px;">
+
+                    <span class="km-text">
+                        2.1公里
+                    </span> ·
+                     浏览
+                </div>
+            </div>
+        </div>
+                <div class="girl-card" data-type="featured" data-city=""
+            data-juli="19" data-gender="女"
+            data-age="25" onclick="tip()">
+
+            <div class="img-box">
+                <img src="assets/uploads/cf_6973747745ed1.jpg" loading="lazy">
+                                <div class="online-led"></div>
+                            </div>
+
+            <div class="info-box">
+                <div class="nickname">
+                    <span class="tag">
+                        ♀                        25                    </span>
+                    美子                  </div>
+                <!-- Custom text fields display -->
+                <div class="meta" style="margin-top:5px;">
+
+                    <span class="km-text">
+                        19公里
+                    </span> ·
+                    浏览
+                </div>
+            </div>
+        </div>
+                <div class="girl-card" data-type="recommend" data-city=""
+            data-juli="8" data-gender=""
+            data-age="36" onclick="tip()">
+
+            <div class="img-box">
+                <img src="assets/uploads/cf_6973a7dbb8f43.jpg" loading="lazy">
+                                <div class="online-led"></div>
+                            </div>
+
+            <div class="info-box">
+                <div class="nickname">
+                    <span class="tag">
+                        ♀                        36                    </span>
+                    奏                </div>
+                <!-- Custom text fields display -->
+                <div class="meta" style="margin-top:5px;">
+
+                    <span class="km-text">
+                        8公里
+                    </span> ·
+                     浏览
+                </div>
+            </div>
+        </div>
+                <div class="girl-card" data-type="featured" data-city=""
+            data-juli="1.2" data-gender="女"
+            data-age="21" onclick="tip()">
+
+            <div class="img-box">
+                <img src="assets/uploads/cf_697363050439c.jpg" loading="lazy">
+                                <div class="online-led"></div>
+                            </div>
+
+            <div class="info-box">
+                <div class="nickname">
+                    <span class="tag">
+                        ♀                        21                    </span>
+                    小岚                  </div>
+                <!-- Custom text fields display -->
+                <div class="meta" style="margin-top:5px;">
+
+                    <span class="km-text">
+                        1.2公里
+                    </span> ·
+                     浏览
+                </div>
+            </div>
+        </div>
+                <div class="girl-card" data-type="recommend" data-city=""
+            data-juli="4.5" data-gender=""
+            data-age="27" onclick="tip()">
+
+            <div class="img-box">
+                <img src="assets/uploads/cf_6973ab089368a.jpg" loading="lazy">
+                                <div class="online-led"></div>
+                            </div>
+
+            <div class="info-box">
+                <div class="nickname">
+                    <span class="tag">
+                        ♀                        27                    </span>
+                    樱子                </div>
+                <!-- Custom text fields display -->
+                <div class="meta" style="margin-top:5px;">
+
+                    <span class="km-text">
+                        4.5公里
+                    </span> ·
+                     浏览
+                </div>
+            </div>
+        </div>
+                <div class="girl-card" data-type="featured" data-city="青森"
+            data-juli="10" data-gender="女"
+            data-age="26" onclick="tip()">
+
+            <div class="img-box">
+                <img src="assets/uploads/cf_696fe3722642e.jpg" loading="lazy">
+                            </div>
+
+            <div class="info-box">
+                <div class="nickname">
+                    <span class="tag">
+                        ♀                        26                    </span>
+                    凪香                </div>
+                <!-- Custom text fields display -->
+                <div class="meta" style="margin-top:5px;">
+
+                    <span class="km-text">
+                        10公里
+                    </span> ·
+                     浏览
+                </div>
+            </div>
+        </div>
+                <div class="girl-card" data-type="recommend" data-city=""
+            data-juli="3" data-gender=""
+            data-age="29" onclick="tip()">
+
+            <div class="img-box">
+                <img src="assets/uploads/cf_69739a9d0ef35.jpg" loading="lazy">
+                                <div class="online-led"></div>
+                            </div>
+
+            <div class="info-box">
+                <div class="nickname">
+                    <span class="tag">
+                        ♀                        29                    </span>
+                    小凪                  </div>
+                <!-- Custom text fields display -->
+                <div class="meta" style="margin-top:5px;">
+
+                    <span class="km-text">
+                        3公里
+                    </span> ·
+                     浏览
+                </div>
+            </div>
+        </div>
+                <div class="girl-card" data-type="recommend" data-city=""
+            data-juli="7" data-gender=""
+            data-age="27" onclick="tip()">
+
+            <div class="img-box">
+                <img src="assets/uploads/cf_6973aa5fca732.jpg" loading="lazy">
+                                <div class="online-led"></div>
+                            </div>
+
+            <div class="info-box">
+                <div class="nickname">
+                    <span class="tag">
+                        ♀                        27                    </span>
+                    凛子                </div>
+                <!-- Custom text fields display -->
+                <div class="meta" style="margin-top:5px;">
+
+                    <span class="km-text">
+                        7公里
+                    </span> ·
+                     浏览
+                </div>
+            </div>
+        </div>
+                <div class="girl-card" data-type="recommend" data-city=""
+            data-juli="12" data-gender="女"
+            data-age="25" onclick="tip()">
+
+            <div class="img-box">
+                <img src="assets/uploads/cf_6973734d41ab0.jpg" loading="lazy">
+                                <div class="online-led"></div>
+                            </div>
+
+            <div class="info-box">
+                <div class="nickname">
+                    <span class="tag">
+                        ♀                        25                    </span>
+                    苏菲                  </div>
+                <!-- Custom text fields display -->
+                <div class="meta" style="margin-top:5px;">
+
+                    <span class="km-text">
+                        12公里
+                    </span> ·
+                     浏览
+                </div>
+            </div>
+        </div>
+                <div class="girl-card" data-type="featured" data-city=""
+            data-juli="3" data-gender="女"
+            data-age="23" onclick="tip()">
+
+            <div class="img-box">
+                <img src="assets/uploads/cf_6973609cc8ea2.jpg" loading="lazy">
+                                <div class="online-led"></div>
+                            </div>
+
+            <div class="info-box">
+                <div class="nickname">
+                    <span class="tag">
+                        ♀                        23                    </span>
+                    安雅                   </div>
+                <!-- Custom text fields display -->
+                <div class="meta" style="margin-top:5px;">
+
+                    <span class="km-text">
+                        3公里
+                    </span> ·
+                     浏览
+                </div>
+            </div>
+        </div>
+                <div class="girl-card" data-type="recommend" data-city=""
+            data-juli="1.5" data-gender=""
+            data-age="24" onclick="tip()">
+
+            <div class="img-box">
+                <img src="assets/uploads/cf_6973ac1a4d0f6.jpg" loading="lazy">
+                                <div class="online-led"></div>
+                            </div>
+
+            <div class="info-box">
+                <div class="nickname">
+                    <span class="tag">
+                        ♀                        24                    </span>
+                    小百合                </div>
+                <!-- Custom text fields display -->
+                <div class="meta" style="margin-top:5px;">
+
+                    <span class="km-text">
+                        1.5公里
+                    </span> ·
+                     浏览
+                </div>
+            </div>
+        </div>
+                <div class="girl-card" data-type="featured" data-city=""
+            data-juli="13" data-gender="女"
+            data-age="24" onclick="tip()">
+
+            <div class="img-box">
+                <img src="assets/uploads/cf_697375817ce74.jpg" loading="lazy">
+                                <div class="online-led"></div>
+                            </div>
+
+            <div class="info-box">
+                <div class="nickname">
+                    <span class="tag">
+                        ♀                        24                    </span>
+                    美羽                 </div>
+                <!-- Custom text fields display -->
+                <div class="meta" style="margin-top:5px;">
+
+                    <span class="km-text">
+                        13公里
+                    </span> ·
+                     浏览
+                </div>
+            </div>
+        </div>
+                <div class="girl-card" data-type="recommend" data-city=""
+            data-juli="6" data-gender=""
+            data-age="30" onclick="tip()">
+
+            <div class="img-box">
+                <img src="assets/uploads/cf_6973ad965dcb4.jpg" loading="lazy">
+                                <div class="online-led"></div>
+                            </div>
+
+            <div class="info-box">
+                <div class="nickname">
+                    <span class="tag">
+                        ♀                        30                    </span>
+                    米雪                </div>
+                <!-- Custom text fields display -->
+                <div class="meta" style="margin-top:5px;">
+
+                    <span class="km-text">
+                        6公里
+                    </span> ·
+                     浏览
+                </div>
+            </div>
+        </div>
+                <div class="girl-card" data-type="recommend" data-city="北海道"
+            data-juli="25" data-gender="女"
+            data-age="22" onclick="tip()">
+
+            <div class="img-box">
+                <img src="assets/uploads/cf_69712dd091f7e.jpg" loading="lazy">
+                                <div class="online-led"></div>
+                            </div>
+
+            <div class="info-box">
+                <div class="nickname">
+                    <span class="tag">
+                        ♀                        22                    </span>
+                    蜜糖                </div>
+                <!-- Custom text fields display -->
+                <div class="meta" style="margin-top:5px;">
+
+                    <span class="km-text">
+                        25公里
+                    </span> ·
+                     浏览
+                </div>
+            </div>
+        </div>
+                <div class="girl-card" data-type="recommend" data-city=""
+            data-juli="5" data-gender=""
+            data-age="32" onclick="tip()">
+
+            <div class="img-box">
+                <img src="assets/uploads/cf_69739ab768100.jpg" loading="lazy">
+                                <div class="online-led"></div>
+                            </div>
+
+            <div class="info-box">
+                <div class="nickname">
+                    <span class="tag">
+                        ♀                        32                    </span>
+                    艾拉                </div>
+                <!-- Custom text fields display -->
+                <div class="meta" style="margin-top:5px;">
+
+                    <span class="km-text">
+                        5公里
+                    </span> ·
+                     浏览
+                </div>
+            </div>
+        </div>
+                <div class="girl-card" data-type="recommend" data-city=""
+            data-juli="1" data-gender=""
+            data-age="33" onclick="tip()">
+
+            <div class="img-box">
+                <img src="assets/uploads/cf_6973a6fbb6b03.jpg" loading="lazy">
+                                <div class="online-led"></div>
+                            </div>
+
+            <div class="info-box">
+                <div class="nickname">
+                    <span class="tag">
+                        ♀                        33                    </span>
+                    紫宁                </div>
+                <!-- Custom text fields display -->
+                <div class="meta" style="margin-top:5px;">
+
+                    <span class="km-text">
+                        1公里
+                    </span> ·
+                     浏览
+                </div>
+            </div>
+        </div>
+                <div class="girl-card" data-type="recommend" data-city=""
+            data-juli="6" data-gender=""
+            data-age="26" onclick="tip()">
+
+            <div class="img-box">
+                <img src="assets/uploads/cf_6973aac7efdf2.jpg" loading="lazy">
+                                <div class="online-led"></div>
+                            </div>
+
+            <div class="info-box">
+                <div class="nickname">
+                    <span class="tag">
+                        ♀                        26                    </span>
+                    莉娜                </div>
+                <!-- Custom text fields display -->
+                <div class="meta" style="margin-top:5px;">
+
+                    <span class="km-text">
+                        6公里
+                    </span> ·
+                     浏览
+                </div>
+            </div>
+        </div>
+                <div class="girl-card" data-type="recommend" data-city=""
+            data-juli="3" data-gender=""
+            data-age="34" onclick="tip()">
+
+            <div class="img-box">
+                <img src="assets/uploads/cf_6973a91ad2e94.jpg" loading="lazy">
+                                <div class="online-led"></div>
+                            </div>
+
+            <div class="info-box">
+                <div class="nickname">
+                    <span class="tag">
+                        ♀                        34                    </span>
+                    结衣                </div>
+                <!-- Custom text fields display -->
+                <div class="meta" style="margin-top:5px;">
+
+                    <span class="km-text">
+                        3公里
+                    </span> ·
+                     浏览
+                </div>
+            </div>
+        </div>
+                <div class="girl-card" data-type="recommend" data-city=""
+            data-juli="4" data-gender=""
+            data-age="30" onclick="tip()">
+
+            <div class="img-box">
+                <img src="assets/uploads/cf_6973a7ff29cd0.jpg" loading="lazy">
+                                <div class="online-led"></div>
+                            </div>
+
+            <div class="info-box">
+                <div class="nickname">
+                    <span class="tag">
+                        ♀                        30                    </span>
+                    沙耶                </div>
+                <!-- Custom text fields display -->
+                <div class="meta" style="margin-top:5px;">
+
+                    <span class="km-text">
+                        4公里
+                    </span> ·
+                     浏览
+                </div>
+            </div>
+        </div>
+                <div class="girl-card" data-type="recommend" data-city=""
+            data-juli="13" data-gender=""
+            data-age="29" onclick="tip()">
+
+            <div class="img-box">
+                <img src="assets/uploads/cf_69739a5e1e01b.jpg" loading="lazy">
+                                <div class="online-led"></div>
+                            </div>
+
+            <div class="info-box">
+                <div class="nickname">
+                    <span class="tag">
+                        ♀                        29                    </span>
+                    优亚                </div>
+                <!-- Custom text fields display -->
+                <div class="meta" style="margin-top:5px;">
+
+                    <span class="km-text">
+                        13公里
+                    </span> ·
+                     浏览
+                </div>
+            </div>
+        </div>
+                <div class="girl-card" data-type="recommend" data-city="北海道"
+            data-juli="15" data-gender="女"
+            data-age="24" onclick="tip()">
+
+            <div class="img-box">
+                <img src="assets/uploads/cf_696fe12b28e0c.jpg" loading="lazy">
+                            </div>
+
+            <div class="info-box">
+                <div class="nickname">
+                    <span class="tag">
+                        ♀                        24                    </span>
+                    盐月                </div>
+                <!-- Custom text fields display -->
+                <div class="meta" style="margin-top:5px;">
+
+                    <span class="km-text">
+                        15公里
+                    </span> ·
+                     浏览
+                </div>
+            </div>
+        </div>
+                <div class="girl-card" data-type="featured" data-city=""
+            data-juli="3" data-gender="女"
+            data-age="21" onclick="tip()">
+
+            <div class="img-box">
+                <img src="assets/uploads/cf_697370e405447.jpg" loading="lazy">
+                                <div class="online-led"></div>
+                            </div>
+
+            <div class="info-box">
+                <div class="nickname">
+                    <span class="tag">
+                        ♀                        21                    </span>
+                    阳葵                   </div>
+                <!-- Custom text fields display -->
+                <div class="meta" style="margin-top:5px;">
+
+                    <span class="km-text">
+                        3公里
+                    </span> ·
+                     浏览
+                </div>
+            </div>
+        </div>
+                <div class="girl-card" data-type="featured" data-city=""
+            data-juli="2.3" data-gender="女"
+            data-age="20" onclick="tip()">
+
+            <div class="img-box">
+                <img src="assets/uploads/cf_6973636147d0d.jpg" loading="lazy">
+                                <div class="online-led"></div>
+                            </div>
+
+            <div class="info-box">
+                <div class="nickname">
+                    <span class="tag">
+                        ♀                        20                    </span>
+                    冰夕                 </div>
+                <!-- Custom text fields display -->
+                <div class="meta" style="margin-top:5px;">
+
+                    <span class="km-text">
+                        2.3公里
+                    </span> ·
+                     浏览
+                </div>
+            </div>
+        </div>
+                <div class="girl-card" data-type="recommend" data-city=""
+            data-juli="3.9" data-gender=""
+            data-age="28" onclick="tip()">
+
+            <div class="img-box">
+                <img src="assets/uploads/cf_69739535d8eab.jpg" loading="lazy">
+                                <div class="online-led"></div>
+                            </div>
+
+            <div class="info-box">
+                <div class="nickname">
+                    <span class="tag">
+                        ♀                        28                    </span>
+                    小遥                 </div>
+                <!-- Custom text fields display -->
+                <div class="meta" style="margin-top:5px;">
+
+                    <span class="km-text">
+                        3.9公里
+                    </span> ·
+                     浏览
+                </div>
+            </div>
+        </div>
+                <div class="girl-card" data-type="recommend" data-city=""
+            data-juli="4" data-gender=""
+            data-age="24" onclick="tip()">
+
+            <div class="img-box">
+                <img src="assets/uploads/cf_6973aaad41f7d.jpg" loading="lazy">
+                                <div class="online-led"></div>
+                            </div>
+
+            <div class="info-box">
+                <div class="nickname">
+                    <span class="tag">
+                        ♀                        24                    </span>
+                     美优                 </div>
+                <!-- Custom text fields display -->
+                <div class="meta" style="margin-top:5px;">
+
+                    <span class="km-text">
+                        4公里
+                    </span> ·
+                     浏览
+                </div>
+            </div>
+        </div>
+                <div class="girl-card" data-type="featured" data-city=""
+            data-juli="2.7" data-gender="女"
+            data-age="24" onclick="tip()">
+
+            <div class="img-box">
+                <img src="assets/uploads/cf_697374eec76cb.jpg" loading="lazy">
+                                <div class="online-led"></div>
+                            </div>
+
+            <div class="info-box">
+                <div class="nickname">
+                    <span class="tag">
+                        ♀                        24                    </span>
+                    雾语                  </div>
+                <!-- Custom text fields display -->
+                <div class="meta" style="margin-top:5px;">
+
+                    <span class="km-text">
+                        2.7公里
+                    </span> ·
+                     浏览
+                </div>
+            </div>
+        </div>
+                <div class="girl-card" data-type="recommend" data-city=""
+            data-juli="6" data-gender=""
+            data-age="26" onclick="tip()">
+
+            <div class="img-box">
+                <img src="assets/uploads/cf_6973a9db9fc25.jpg" loading="lazy">
+                                <div class="online-led"></div>
+                            </div>
+
+            <div class="info-box">
+                <div class="nickname">
+                    <span class="tag">
+                        ♀                        26                    </span>
+                    晴糖                </div>
+                <!-- Custom text fields display -->
+                <div class="meta" style="margin-top:5px;">
+
+                    <span class="km-text">
+                        6公里
+                    </span> ·
+                     浏览
+                </div>
+            </div>
+        </div>
+                <div class="girl-card" data-type="recommend" data-city=""
+            data-juli="18" data-gender=""
+            data-age="34" onclick="tip()">
+
+            <div class="img-box">
+                <img src="assets/uploads/cf_6973a717c8789.jpg" loading="lazy">
+                                <div class="online-led"></div>
+                            </div>
+
+            <div class="info-box">
+                <div class="nickname">
+                    <span class="tag">
+                        ♀                        34                    </span>
+                    爱美                </div>
+                <!-- Custom text fields display -->
+                <div class="meta" style="margin-top:5px;">
+
+                    <span class="km-text">
+                        18公里
+                    </span> ·
+                     浏览
+                </div>
+            </div>
+        </div>
+                <div class="girl-card" data-type="featured" data-city=""
+            data-juli="2.9" data-gender="女"
+            data-age="26" onclick="tip()">
+
+            <div class="img-box">
+                <img src="assets/uploads/cf_697376124c0b3.jpg" loading="lazy">
+                                <div class="online-led"></div>
+                            </div>
+
+            <div class="info-box">
+                <div class="nickname">
+                    <span class="tag">
+                        ♀                        26                    </span>
+                    真央                  </div>
+                <!-- Custom text fields display -->
+                <div class="meta" style="margin-top:5px;">
+
+                    <span class="km-text">
+                        2.9公里
+                    </span> ·
+                     浏览
+                </div>
+            </div>
+        </div>
+                <div class="girl-card" data-type="recommend" data-city=""
+            data-juli="13" data-gender=""
+            data-age="26" onclick="tip()">
+
+            <div class="img-box">
+                <img src="assets/uploads/cf_6973aa28721c1.jpg" loading="lazy">
+                                <div class="online-led"></div>
+                            </div>
+
+            <div class="info-box">
+                <div class="nickname">
+                    <span class="tag">
+                        ♀                        26                    </span>
+                    星咲                </div>
+                <!-- Custom text fields display -->
+                <div class="meta" style="margin-top:5px;">
+
+                    <span class="km-text">
+                        13公里
+                    </span> ·
+                     浏览
+                </div>
+            </div>
+        </div>
+                <div class="girl-card" data-type="recommend" data-city=""
+            data-juli="7.5" data-gender=""
+            data-age="27" onclick="tip()">
+
+            <div class="img-box">
+                <img src="assets/uploads/cf_6973ab6e96233.jpg" loading="lazy">
+                                <div class="online-led"></div>
+                            </div>
+
+            <div class="info-box">
+                <div class="nickname">
+                    <span class="tag">
+                        ♀                        27                    </span>
+                    梨子                </div>
+                <!-- Custom text fields display -->
+                <div class="meta" style="margin-top:5px;">
+
+                    <span class="km-text">
+                        7.5公里
+                    </span> ·
+                     浏览
+                </div>
+            </div>
+        </div>
+                <div class="girl-card" data-type="recommend" data-city=""
+            data-juli="1.8" data-gender="女"
+            data-age="24" onclick="tip()">
+
+            <div class="img-box">
+                <img src="assets/uploads/cf_69737326e9bd6.jpg" loading="lazy">
+                                <div class="online-led"></div>
+                            </div>
+
+            <div class="info-box">
+                <div class="nickname">
+                    <span class="tag">
+                        ♀                        24                    </span>
+                    爱奈                   </div>
+                <!-- Custom text fields display -->
+                <div class="meta" style="margin-top:5px;">
+
+                    <span class="km-text">
+                        1.8公里
+                    </span> ·
+                     浏览
+                </div>
+            </div>
+        </div>
+                <div class="girl-card" data-type="recommend" data-city=""
+            data-juli="10" data-gender=""
+            data-age="30" onclick="tip()">
+
+            <div class="img-box">
+                <img src="assets/uploads/cf_69739a23df1ba.jpg" loading="lazy">
+                                <div class="online-led"></div>
+                            </div>
+
+            <div class="info-box">
+                <div class="nickname">
+                    <span class="tag">
+                        ♀                        30                    </span>
+                    希雅                    </div>
+                <!-- Custom text fields display -->
+                <div class="meta" style="margin-top:5px;">
+
+                    <span class="km-text">
+                        10公里
+                    </span> ·
+                     浏览
+                </div>
+            </div>
+        </div>
+                <div class="girl-card" data-type="featured" data-city=""
+            data-juli="17" data-gender="女"
+            data-age="21" onclick="tip()">
+
+            <div class="img-box">
+                <img src="assets/uploads/cf_69737201c69f6.jpg" loading="lazy">
+                                <div class="online-led"></div>
+                            </div>
+
+            <div class="info-box">
+                <div class="nickname">
+                    <span class="tag">
+                        ♀                        21                    </span>
+                    梨花                </div>
+                <!-- Custom text fields display -->
+                <div class="meta" style="margin-top:5px;">
+
+                    <span class="km-text">
+                        17公里
+                    </span> ·
+                     浏览
+                </div>
+            </div>
+        </div>
+                <div class="girl-card" data-type="featured" data-city=""
+            data-juli="13" data-gender="女"
+            data-age="28" onclick="tip()">
+
+            <div class="img-box">
+                <img src="assets/uploads/cf_697375dc87257.jpg" loading="lazy">
+                                <div class="online-led"></div>
+                            </div>
+
+            <div class="info-box">
+                <div class="nickname">
+                    <span class="tag">
+                        ♀                        28                    </span>
+                    云朵                    </div>
+                <!-- Custom text fields display -->
+                <div class="meta" style="margin-top:5px;">
+
+                    <span class="km-text">
+                        13公里
+                    </span> ·
+                    浏览
+                </div>
+            </div>
+        </div>
+                <div class="girl-card" data-type="recommend" data-city=""
+            data-juli="8" data-gender=""
+            data-age="30" onclick="tip()">
+
+            <div class="img-box">
+                <img src="assets/uploads/cf_697399a06a931.jpg" loading="lazy">
+                                <div class="online-led"></div>
+                            </div>
+
+            <div class="info-box">
+                <div class="nickname">
+                    <span class="tag">
+                        ♀                        30                    </span>
+                    雨香                    </div>
+                <!-- Custom text fields display -->
+                <div class="meta" style="margin-top:5px;">
+
+                    <span class="km-text">
+                        8公里
+                    </span> ·
+                     浏览
+                </div>
+            </div>
+        </div>
+                <div class="girl-card" data-type="featured" data-city=""
+            data-juli="6" data-gender=""
+            data-age="19" onclick="tip()">
+
+            <div class="img-box">
+                <img src="assets/uploads/cf_697371235150b.jpg" loading="lazy">
+                                <div class="online-led"></div>
+                            </div>
+
+            <div class="info-box">
+                <div class="nickname">
+                    <span class="tag">
+                        ♀                        19                    </span>
+                    真由                   </div>
+                <!-- Custom text fields display -->
+                <div class="meta" style="margin-top:5px;">
+
+                    <span class="km-text">
+                        6公里
+                    </span> ·
+                     浏览
+                </div>
+            </div>
+        </div>
+                <div class="girl-card" data-type="recommend" data-city=""
+            data-juli="7.5" data-gender=""
+            data-age="32" onclick="tip()">
+
+            <div class="img-box">
+                <img src="assets/uploads/cf_6973ad1ce94ce.jpg" loading="lazy">
+                                <div class="online-led"></div>
+                            </div>
+
+            <div class="info-box">
+                <div class="nickname">
+                    <span class="tag">
+                        ♀                        32                    </span>
+                    白日记                 </div>
+                <!-- Custom text fields display -->
+                <div class="meta" style="margin-top:5px;">
+
+                    <span class="km-text">
+                        7.5公里
+                    </span> ·
+                     浏览
+                </div>
+            </div>
+        </div>
+                <div class="girl-card" data-type="featured" data-city=""
+            data-juli="1.6" data-gender="女"
+            data-age="23" onclick="tip()">
+
+            <div class="img-box">
+                <img src="assets/uploads/cf_697372e113cc5.jpg" loading="lazy">
+                                <div class="online-led"></div>
+                            </div>
+
+            <div class="info-box">
+                <div class="nickname">
+                    <span class="tag">
+                        ♀                        23                    </span>
+                    由香                  </div>
+                <!-- Custom text fields display -->
+                <div class="meta" style="margin-top:5px;">
+
+                    <span class="km-text">
+                        1.6公里
+                    </span> ·
+                     浏览
+                </div>
+            </div>
+        </div>
+                <div class="girl-card" data-type="featured" data-city=""
+            data-juli="3.5" data-gender=""
+            data-age="30" onclick="tip()">
+
+            <div class="img-box">
+                <img src="assets/uploads/cf_6973a8a6e8c56.jpg" loading="lazy">
+                                <div class="online-led"></div>
+                            </div>
+
+            <div class="info-box">
+                <div class="nickname">
+                    <span class="tag">
+                        ♀                        30                    </span>
+                    焦糖                </div>
+                <!-- Custom text fields display -->
+                <div class="meta" style="margin-top:5px;">
+
+                    <span class="km-text">
+                        3.5公里
+                    </span> ·
+                     浏览
+                </div>
+            </div>
+        </div>
+                <div class="girl-card" data-type="recommend" data-city=""
+            data-juli="2.5" data-gender=""
+            data-age="35" onclick="tip()">
+
+            <div class="img-box">
+                <img src="assets/uploads/cf_6973a7bd5528d.jpg" loading="lazy">
+                                <div class="online-led"></div>
+                            </div>
+
+            <div class="info-box">
+                <div class="nickname">
+                    <span class="tag">
+                        ♀                        35                    </span>
+                    崔琳                </div>
+                <!-- Custom text fields display -->
+                <div class="meta" style="margin-top:5px;">
+
+                    <span class="km-text">
+                        2.5公里
+                    </span> ·
+                     浏览
+                </div>
+            </div>
+        </div>
+                <div class="girl-card" data-type="featured" data-city=""
+            data-juli="1.6" data-gender="女"
+            data-age="26" onclick="tip()">
+
+            <div class="img-box">
+                <img src="assets/uploads/cf_6973749eae6a5.jpg" loading="lazy">
+                                <div class="online-led"></div>
+                            </div>
+
+            <div class="info-box">
+                <div class="nickname">
+                    <span class="tag">
+                        ♀                        26                    </span>
+                    瑞希                    </div>
+                <!-- Custom text fields display -->
+                <div class="meta" style="margin-top:5px;">
+
+                    <span class="km-text">
+                        1.6公里
+                    </span> ·
+                     浏览
+                </div>
+            </div>
+        </div>
+                <div class="girl-card" data-type="recommend" data-city=""
+            data-juli="2.1" data-gender=""
+            data-age="29" onclick="tip()">
+
+            <div class="img-box">
+                <img src="assets/uploads/cf_69739957270bd.jpg" loading="lazy">
+                                <div class="online-led"></div>
+                            </div>
+
+            <div class="info-box">
+                <div class="nickname">
+                    <span class="tag">
+                        ♀                        29                    </span>
+                    诗织                 </div>
+                <!-- Custom text fields display -->
+                <div class="meta" style="margin-top:5px;">
+
+                    <span class="km-text">
+                        2.1公里
+                    </span> ·
+                     浏览
+                </div>
+            </div>
+        </div>
+                <div class="girl-card" data-type="recommend" data-city=""
+            data-juli="4.5" data-gender=""
+            data-age="25" onclick="tip()">
+
+            <div class="img-box">
+                <img src="assets/uploads/cf_6973ad032d038.jpg" loading="lazy">
+                                <div class="online-led"></div>
+                            </div>
+
+            <div class="info-box">
+                <div class="nickname">
+                    <span class="tag">
+                        ♀                        25                    </span>
+                    爱茉                </div>
+                <!-- Custom text fields display -->
+                <div class="meta" style="margin-top:5px;">
+
+                    <span class="km-text">
+                        4.5公里
+                    </span> ·
+                     浏览
+                </div>
+            </div>
+        </div>
+                <div class="girl-card" data-type="featured" data-city="青森"
+            data-juli="11" data-gender="女"
+            data-age="22" onclick="tip()">
+
+            <div class="img-box">
+                <img src="assets/uploads/cf_696fe3a7c01de.jpg" loading="lazy">
+                                <div class="online-led"></div>
+                            </div>
+
+            <div class="info-box">
+                <div class="nickname">
+                    <span class="tag">
+                        ♀                        22                    </span>
+                    美咲                </div>
+                <!-- Custom text fields display -->
+                <div class="meta" style="margin-top:5px;">
+
+                    <span class="km-text">
+                        11公里
+                    </span> ·
+                     浏览
+                </div>
+            </div>
+        </div>
+                <div class="girl-card" data-type="recommend" data-city=""
+            data-juli="5" data-gender=""
+            data-age="25" onclick="tip()">
+
+            <div class="img-box">
+                <img src="assets/uploads/cf_6973aa42a74b9.jpg" loading="lazy">
+                                <div class="online-led"></div>
+                            </div>
+
+            <div class="info-box">
+                <div class="nickname">
+                    <span class="tag">
+                        ♀                        25                    </span>
+                    樱                </div>
+                <!-- Custom text fields display -->
+                <div class="meta" style="margin-top:5px;">
+
+                    <span class="km-text">
+                        5公里
+                    </span> ·
+                     浏览
+                </div>
+            </div>
+        </div>
+                <div class="girl-card" data-type="featured" data-city=""
+            data-juli="3.4" data-gender="女"
+            data-age="27" onclick="tip()">
+
+            <div class="img-box">
+                <img src="assets/uploads/cf_697374c8920dd.jpg" loading="lazy">
+                                <div class="online-led"></div>
+                            </div>
+
+            <div class="info-box">
+                <div class="nickname">
+                    <span class="tag">
+                        ♀                        27                    </span>
+                    葵花                 </div>
+                <!-- Custom text fields display -->
+                <div class="meta" style="margin-top:5px;">
+
+                    <span class="km-text">
+                        3.4公里
+                    </span> ·
+                     浏览
+                </div>
+            </div>
+        </div>
+                <div class="girl-card" data-type="featured" data-city=""
+            data-juli="1.8" data-gender="女"
+            data-age="22" onclick="tip()">
+
+            <div class="img-box">
+                <img src="assets/uploads/cf_6973638c651d3.jpg" loading="lazy">
+                                <div class="online-led"></div>
+                            </div>
+
+            <div class="info-box">
+                <div class="nickname">
+                    <span class="tag">
+                        ♀                        22                    </span>
+                    诺娃                 </div>
+                <!-- Custom text fields display -->
+                <div class="meta" style="margin-top:5px;">
+
+                    <span class="km-text">
+                        1.8公里
+                    </span> ·
+                     浏览
+                </div>
+            </div>
+        </div>
+                <div class="girl-card" data-type="featured" data-city=""
+            data-juli="9" data-gender=""
+            data-age="20" onclick="tip()">
+
+            <div class="img-box">
+                <img src="assets/uploads/cf_6973717bd03b1.jpg" loading="lazy">
+                                <div class="online-led"></div>
+                            </div>
+
+            <div class="info-box">
+                <div class="nickname">
+                    <span class="tag">
+                        ♀                        20                    </span>
+                    初雪                  </div>
+                <!-- Custom text fields display -->
+                <div class="meta" style="margin-top:5px;">
+
+                    <span class="km-text">
+                        9公里
+                    </span> ·
+                     浏览
+                </div>
+            </div>
+        </div>
+                <div class="girl-card" data-type="recommend" data-city=""
+            data-juli="5" data-gender=""
+            data-age="30" onclick="tip()">
+
+            <div class="img-box">
+                <img src="assets/uploads/cf_6973a775a429f.jpg" loading="lazy">
+                                <div class="online-led"></div>
+                            </div>
+
+            <div class="info-box">
+                <div class="nickname">
+                    <span class="tag">
+                        ♀                        30                    </span>
+                    心音                </div>
+                <!-- Custom text fields display -->
+                <div class="meta" style="margin-top:5px;">
+
+                    <span class="km-text">
+                        5公里
+                    </span> ·
+                     浏览
+                </div>
+            </div>
+        </div>
+                <div class="girl-card" data-type="recommend" data-city=""
+            data-juli="2.5" data-gender=""
+            data-age="30" onclick="tip()">
+
+            <div class="img-box">
+                <img src="assets/uploads/cf_69739af54a98e.jpg" loading="lazy">
+                                <div class="online-led"></div>
+                            </div>
+
+            <div class="info-box">
+                <div class="nickname">
+                    <span class="tag">
+                        ♀                        30                    </span>
+                    月奈                 </div>
+                <!-- Custom text fields display -->
+                <div class="meta" style="margin-top:5px;">
+
+                    <span class="km-text">
+                        2.5公里
+                    </span> ·
+                     浏览
+                </div>
+            </div>
+        </div>
+                <div class="girl-card" data-type="featured" data-city=""
+            data-juli="4.2" data-gender="女"
+            data-age="22" onclick="tip()">
+
+            <div class="img-box">
+                <img src="assets/uploads/cf_697360ec1ea9c.jpg" loading="lazy">
+                                <div class="online-led"></div>
+                            </div>
+
+            <div class="info-box">
+                <div class="nickname">
+                    <span class="tag">
+                        ♀                        22                    </span>
+                    苏诺                    </div>
+                <!-- Custom text fields display -->
+                <div class="meta" style="margin-top:5px;">
+
+                    <span class="km-text">
+                        4.2公里
+                    </span> ·
+                     浏览
+                </div>
+            </div>
+        </div>
+                <div class="girl-card" data-type="featured" data-city=""
+            data-juli="15" data-gender=""
+            data-age="22" onclick="tip()">
+
+            <div class="img-box">
+                <img src="assets/uploads/cf_697371b4e8cd1.jpg" loading="lazy">
+                                <div class="online-led"></div>
+                            </div>
+
+            <div class="info-box">
+                <div class="nickname">
+                    <span class="tag">
+                        ♀                        22                    </span>
+                    花音                  </div>
+                <!-- Custom text fields display -->
+                <div class="meta" style="margin-top:5px;">
+
+                    <span class="km-text">
+                        15公里
+                    </span> ·
+                     浏览
+                </div>
+            </div>
+        </div>
+                <div class="girl-card" data-type="recommend" data-city=""
+            data-juli="2.5" data-gender=""
+            data-age="27" onclick="tip()">
+
+            <div class="img-box">
+                <img src="assets/uploads/cf_6973a97b403d2.jpg" loading="lazy">
+                                <div class="online-led"></div>
+                            </div>
+
+            <div class="info-box">
+                <div class="nickname">
+                    <span class="tag">
+                        ♀                        27                    </span>
+                    奶茶                </div>
+                <!-- Custom text fields display -->
+                <div class="meta" style="margin-top:5px;">
+
+                    <span class="km-text">
+                        2.5公里
+                    </span> ·
+                     浏览
+                </div>
+            </div>
+        </div>
+                <div class="girl-card" data-type="featured" data-city="北海道"
+            data-juli="11" data-gender="女"
+            data-age="30" onclick="tip()">
+
+            <div class="img-box">
+                <img src="assets/uploads/cf_69713108a9871.jpg" loading="lazy">
+                                <div class="online-led"></div>
+                            </div>
+
+            <div class="info-box">
+                <div class="nickname">
+                    <span class="tag">
+                        ♀                        30                    </span>
+                    明澄                </div>
+                <!-- Custom text fields display -->
+                <div class="meta" style="margin-top:5px;">
+
+                    <span class="km-text">
+                        11公里
+                    </span> ·
+                     浏览
+                </div>
+            </div>
+        </div>
+                <div class="girl-card" data-type="recommend" data-city=""
+            data-juli="4" data-gender=""
+            data-age="31" onclick="tip()">
+
+            <div class="img-box">
+                <img src="assets/uploads/cf_6973a86fe6206.jpg" loading="lazy">
+                                <div class="online-led"></div>
+                            </div>
+
+            <div class="info-box">
+                <div class="nickname">
+                    <span class="tag">
+                        ♀                        31                    </span>
+                    桃桃                </div>
+                <!-- Custom text fields display -->
+                <div class="meta" style="margin-top:5px;">
+
+                    <span class="km-text">
+                        4公里
+                    </span> ·
+                     浏览
+                </div>
+            </div>
+        </div>
+                <div class="girl-card" data-type="featured" data-city=""
+            data-juli="8" data-gender="女"
+            data-age="21" onclick="tip()">
+
+            <div class="img-box">
+                <img src="assets/uploads/cf_697371436514b.jpg" loading="lazy">
+                                <div class="online-led"></div>
+                            </div>
+
+            <div class="info-box">
+                <div class="nickname">
+                    <span class="tag">
+                        ♀                        21                    </span>
+                    悠奈                  </div>
+                <!-- Custom text fields display -->
+                <div class="meta" style="margin-top:5px;">
+
+                    <span class="km-text">
+                        8公里
+                    </span> ·
+                     浏览
+                </div>
+            </div>
+        </div>
+                <div class="girl-card" data-type="recommend" data-city=""
+            data-juli="2" data-gender=""
+            data-age="32" onclick="tip()">
+
+            <div class="img-box">
+                <img src="assets/uploads/cf_69739c1806468.jpg" loading="lazy">
+                                <div class="online-led"></div>
+                            </div>
+
+            <div class="info-box">
+                <div class="nickname">
+                    <span class="tag">
+                        ♀                        32                    </span>
+                    冰川                  </div>
+                <!-- Custom text fields display -->
+                <div class="meta" style="margin-top:5px;">
+
+                    <span class="km-text">
+                        2公里
+                    </span> ·
+                     浏览
+                </div>
+            </div>
+        </div>
+                <div class="girl-card" data-type="featured" data-city=""
+            data-juli="1.3" data-gender="女"
+            data-age="21" onclick="tip()">
+
+            <div class="img-box">
+                <img src="assets/uploads/cf_697363b194b3b.jpg" loading="lazy">
+                                <div class="online-led"></div>
+                            </div>
+
+            <div class="info-box">
+                <div class="nickname">
+                    <span class="tag">
+                        ♀                        21                    </span>
+                    千春                  </div>
+                <!-- Custom text fields display -->
+                <div class="meta" style="margin-top:5px;">
+
+                    <span class="km-text">
+                        1.3公里
+                    </span> ·
+                     浏览
+                </div>
+            </div>
+        </div>
+                <div class="girl-card" data-type="recommend" data-city=""
+            data-juli="2.6" data-gender=""
+            data-age="23" onclick="tip()">
+
+            <div class="img-box">
+                <img src="assets/uploads/cf_697373aac5d2e.jpg" loading="lazy">
+                                <div class="online-led"></div>
+                            </div>
+
+            <div class="info-box">
+                <div class="nickname">
+                    <span class="tag">
+                        ♀                        23                    </span>
+                    露娜拉                   </div>
+                <!-- Custom text fields display -->
+                <div class="meta" style="margin-top:5px;">
+
+                    <span class="km-text">
+                        2.6公里
+                    </span> ·
+                    浏览
+                </div>
+            </div>
+        </div>
+                <div class="girl-card" data-type="featured" data-city=""
+            data-juli="3.2" data-gender="女"
+            data-age="19" onclick="tip()">
+
+            <div class="img-box">
+                <img src="assets/uploads/cf_69736294e388e.jpg" loading="lazy">
+                                <div class="online-led"></div>
+                            </div>
+
+            <div class="info-box">
+                <div class="nickname">
+                    <span class="tag">
+                        ♀                        19                    </span>
+                    渚                      </div>
+                <!-- Custom text fields display -->
+                <div class="meta" style="margin-top:5px;">
+
+                    <span class="km-text">
+                        3.2公里
+                    </span> ·
+                     浏览
+                </div>
+            </div>
+        </div>
+                <div class="girl-card" data-type="featured" data-city=""
+            data-juli="9" data-gender="女"
+            data-age="27" onclick="tip()">
+
+            <div class="img-box">
+                <img src="assets/uploads/cf_69737451dbe03.jpg" loading="lazy">
+                                <div class="online-led"></div>
+                            </div>
+
+            <div class="info-box">
+                <div class="nickname">
+                    <span class="tag">
+                        ♀                        27                    </span>
+                    诗码                 </div>
+                <!-- Custom text fields display -->
+                <div class="meta" style="margin-top:5px;">
+
+                    <span class="km-text">
+                        9公里
+                    </span> ·
+                     浏览
+                </div>
+            </div>
+        </div>
+                <div class="girl-card" data-type="recommend" data-city=""
+            data-juli="12" data-gender=""
+            data-age="29" onclick="tip()">
+
+            <div class="img-box">
+                <img src="assets/uploads/cf_6973a8536ca61.jpg" loading="lazy">
+                                <div class="online-led"></div>
+                            </div>
+
+            <div class="info-box">
+                <div class="nickname">
+                    <span class="tag">
+                        ♀                        29                    </span>
+                    爱丽丝                </div>
+                <!-- Custom text fields display -->
+                <div class="meta" style="margin-top:5px;">
+
+                    <span class="km-text">
+                        12公里
+                    </span> ·
+                     浏览
+                </div>
+            </div>
+        </div>
+                <div class="girl-card" data-type="recommend" data-city=""
+            data-juli="7" data-gender=""
+            data-age="25" onclick="tip()">
+
+            <div class="img-box">
+                <img src="assets/uploads/cf_6973ab4159746.jpg" loading="lazy">
+                                <div class="online-led"></div>
+                            </div>
+
+            <div class="info-box">
+                <div class="nickname">
+                    <span class="tag">
+                        ♀                        25                    </span>
+                    优奈                </div>
+                <!-- Custom text fields display -->
+                <div class="meta" style="margin-top:5px;">
+
+                    <span class="km-text">
+                        7公里
+                    </span> ·
+                     浏览
+                </div>
+            </div>
+        </div>
+                <div class="girl-card" data-type="recommend" data-city=""
+            data-juli="1.9" data-gender=""
+            data-age="33" onclick="tip()">
+
+            <div class="img-box">
+                <img src="assets/uploads/cf_69739a7f9a2bc.jpg" loading="lazy">
+                                <div class="online-led"></div>
+                            </div>
+
+            <div class="info-box">
+                <div class="nickname">
+                    <span class="tag">
+                        ♀                        33                    </span>
+                    秋叶                </div>
+                <!-- Custom text fields display -->
+                <div class="meta" style="margin-top:5px;">
+
+                    <span class="km-text">
+                        1.9公里
+                    </span> ·
+                     浏览
+                </div>
+            </div>
+        </div>
+                <div class="girl-card" data-type="featured" data-city=""
+            data-juli="8" data-gender=""
+            data-age="27" onclick="tip()">
+
+            <div class="img-box">
+                <img src="assets/uploads/cf_69737413ebbd7.jpg" loading="lazy">
+                                <div class="online-led"></div>
+                            </div>
+
+            <div class="info-box">
+                <div class="nickname">
+                    <span class="tag">
+                        ♀                        27                    </span>
+                    青柠                 </div>
+                <!-- Custom text fields display -->
+                <div class="meta" style="margin-top:5px;">
+
+                    <span class="km-text">
+                        8公里
+                    </span> ·
+                     浏览
+                </div>
+            </div>
+        </div>
+                <div class="girl-card" data-type="featured" data-city=""
+            data-juli="12" data-gender=""
+            data-age="21" onclick="tip()">
+
+            <div class="img-box">
+                <img src="assets/uploads/cf_6973724bde528.jpg" loading="lazy">
+                                <div class="online-led"></div>
+                            </div>
+
+            <div class="info-box">
+                <div class="nickname">
+                    <span class="tag">
+                        ♀                        21                    </span>
+                    雏                     </div>
+                <!-- Custom text fields display -->
+                <div class="meta" style="margin-top:5px;">
+
+                    <span class="km-text">
+                        12公里
+                    </span> ·
+                     浏览
+                </div>
+            </div>
+        </div>
+                <div class="girl-card" data-type="recommend" data-city=""
+            data-juli="5.5" data-gender=""
+            data-age="29" onclick="tip()">
+
+            <div class="img-box">
+                <img src="assets/uploads/cf_6973abb5b2b12.jpg" loading="lazy">
+                                <div class="online-led"></div>
+                            </div>
+
+            <div class="info-box">
+                <div class="nickname">
+                    <span class="tag">
+                        ♀                        29                    </span>
+                    鹿月                </div>
+                <!-- Custom text fields display -->
+                <div class="meta" style="margin-top:5px;">
+
+                    <span class="km-text">
+                        5.5公里
+                    </span> ·
+                     浏览
+                </div>
+            </div>
+        </div>
+                <div class="girl-card" data-type="recommend" data-city=""
+            data-juli="9" data-gender=""
+            data-age="30" onclick="tip()">
+
+            <div class="img-box">
+                <img src="assets/uploads/cf_6973a291b5f7f.jpg" loading="lazy">
+                                <div class="online-led"></div>
+                            </div>
+
+            <div class="info-box">
+                <div class="nickname">
+                    <span class="tag">
+                        ♀                        30                    </span>
+                    莉莎                 </div>
+                <!-- Custom text fields display -->
+                <div class="meta" style="margin-top:5px;">
+
+                    <span class="km-text">
+                        9公里
+                    </span> ·
+                     浏览
+                </div>
+            </div>
+        </div>
+                <div class="girl-card" data-type="recommend" data-city=""
+            data-juli="5" data-gender=""
+            data-age="33" onclick="tip()">
+
+            <div class="img-box">
+                <img src="assets/uploads/cf_6973ade9a3fbf.jpg" loading="lazy">
+                                <div class="online-led"></div>
+                            </div>
+
+            <div class="info-box">
+                <div class="nickname">
+                    <span class="tag">
+                        ♀                        33                    </span>
+                     青花                </div>
+                <!-- Custom text fields display -->
+                <div class="meta" style="margin-top:5px;">
+
+                    <span class="km-text">
+                        5公里
+                    </span> ·
+                     浏览
+                </div>
+            </div>
+        </div>
+                <div class="girl-card" data-type="featured" data-city=""
+            data-juli="5.6" data-gender="女"
+            data-age="28" onclick="tip()">
+
+            <div class="img-box">
+                <img src="assets/uploads/cf_6973751236460.jpg" loading="lazy">
+                                <div class="online-led"></div>
+                            </div>
+
+            <div class="info-box">
+                <div class="nickname">
+                    <span class="tag">
+                        ♀                        28                    </span>
+                    潮汐                </div>
+                <!-- Custom text fields display -->
+                <div class="meta" style="margin-top:5px;">
+
+                    <span class="km-text">
+                        5.6公里
+                    </span> ·
+                     浏览
+                </div>
+            </div>
+        </div>
+                <div class="girl-card" data-type="featured" data-city=""
+            data-juli="6" data-gender="女"
+            data-age="23" onclick="tip()">
+
+            <div class="img-box">
+                <img src="assets/uploads/cf_697360c779f34.jpg" loading="lazy">
+                                <div class="online-led"></div>
+                            </div>
+
+            <div class="info-box">
+                <div class="nickname">
+                    <span class="tag">
+                        ♀                        23                    </span>
+                    梦茶                 </div>
+                <!-- Custom text fields display -->
+                <div class="meta" style="margin-top:5px;">
+
+                    <span class="km-text">
+                        6公里
+                    </span> ·
+                     浏览
+                </div>
+            </div>
+        </div>
+                <div class="girl-card" data-type="recommend" data-city=""
+            data-juli="11" data-gender=""
+            data-age="26" onclick="tip()">
+
+            <div class="img-box">
+                <img src="assets/uploads/cf_6973abf742ff0.jpg" loading="lazy">
+                                <div class="online-led"></div>
+                            </div>
+
+            <div class="info-box">
+                <div class="nickname">
+                    <span class="tag">
+                        ♀                        26                    </span>
+                    秋笑                </div>
+                <!-- Custom text fields display -->
+                <div class="meta" style="margin-top:5px;">
+
+                    <span class="km-text">
+                        11公里
+                    </span> ·
+                     浏览
+                </div>
+            </div>
+        </div>
+                <div class="girl-card" data-type="featured" data-city=""
+            data-juli="10" data-gender=""
+            data-age="26" onclick="tip()">
+
+            <div class="img-box">
+                <img src="assets/uploads/cf_697374322dbc9.jpg" loading="lazy">
+                                <div class="online-led"></div>
+                            </div>
+
+            <div class="info-box">
+                <div class="nickname">
+                    <span class="tag">
+                        ♀                        26                    </span>
+                    雅依                </div>
+                <!-- Custom text fields display -->
+                <div class="meta" style="margin-top:5px;">
+
+                    <span class="km-text">
+                        10公里
+                    </span> ·
+                     浏览
+                </div>
+            </div>
+        </div>
+                <div class="girl-card" data-type="featured" data-city="北海道"
+            data-juli="10" data-gender="女"
+            data-age="27" onclick="tip()">
+
+            <div class="img-box">
+                <img src="assets/uploads/cf_69713159314d5.jpg" loading="lazy">
+                                <div class="online-led"></div>
+                            </div>
+
+            <div class="info-box">
+                <div class="nickname">
+                    <span class="tag">
+                        ♀                        27                    </span>
+                    蓝夏                </div>
+                <!-- Custom text fields display -->
+                <div class="meta" style="margin-top:5px;">
+
+                    <span class="km-text">
+                        10公里
+                    </span> ·
+                     浏览
+                </div>
+            </div>
+        </div>
+                <div class="girl-card" data-type="recommend" data-city=""
+            data-juli="5.6" data-gender=""
+            data-age="33" onclick="tip()">
+
+            <div class="img-box">
+                <img src="assets/uploads/cf_69739c36f021d.jpg" loading="lazy">
+                                <div class="online-led"></div>
+                            </div>
+
+            <div class="info-box">
+                <div class="nickname">
+                    <span class="tag">
+                        ♀                        33                    </span>
+                    女生99                     </div>
+                <!-- Custom text fields display -->
+                <div class="meta" style="margin-top:5px;">
+
+                    <span class="km-text">
+                        5.6公里
+                    </span> ·
+                     浏览
+                </div>
+            </div>
+        </div>
+                <div class="girl-card" data-type="recommend" data-city=""
+            data-juli="15" data-gender=""
+            data-age="29" onclick="tip()">
+
+            <div class="img-box">
+                <img src="assets/uploads/cf_6973ad37c3c29.jpg" loading="lazy">
+                                <div class="online-led"></div>
+                            </div>
+
+            <div class="info-box">
+                <div class="nickname">
+                    <span class="tag">
+                        ♀                        29                    </span>
+                    女生100                </div>
+                <!-- Custom text fields display -->
+                <div class="meta" style="margin-top:5px;">
+
+                    <span class="km-text">
+                        15公里
+                    </span> ·
+                     浏览
+                </div>
+            </div>
+        </div>
+                <div class="girl-card" data-type="recommend" data-city=""
+            data-juli="3.5" data-gender=""
+            data-age="24" onclick="tip()">
+
+            <div class="img-box">
+                <img src="assets/uploads/cf_6973aa88e35d1.jpg" loading="lazy">
+                                <div class="online-led"></div>
+                            </div>
+
+            <div class="info-box">
+                <div class="nickname">
+                    <span class="tag">
+                        ♀                        24                    </span>
+                    女生101                </div>
+                <!-- Custom text fields display -->
+                <div class="meta" style="margin-top:5px;">
+
+                    <span class="km-text">
+                        3.5公里
+                    </span> ·
+                     浏览
+                </div>
+            </div>
+        </div>
+                <div class="girl-card" data-type="recommend" data-city="岩手"
+            data-juli="18" data-gender="女"
+            data-age="26" onclick="tip()">
+
+            <div class="img-box">
+                <img src="assets/uploads/cf_697130a4b8f81.jpg" loading="lazy">
+                                <div class="online-led"></div>
+                            </div>
+
+            <div class="info-box">
+                <div class="nickname">
+                    <span class="tag">
+                        ♀                        26                    </span>
+                    女生102                </div>
+                <!-- Custom text fields display -->
+                <div class="meta" style="margin-top:5px;">
+
+                    <span class="km-text">
+                        18公里
+                    </span> ·
+                     浏览
+                </div>
+            </div>
+        </div>
+                <div class="girl-card" data-type="featured" data-city=""
+            data-juli="5" data-gender="女"
+            data-age="22" onclick="tip()">
+
+            <div class="img-box">
+                <img src="assets/uploads/cf_697371062e396.jpg" loading="lazy">
+                                <div class="online-led"></div>
+                            </div>
+
+            <div class="info-box">
+                <div class="nickname">
+                    <span class="tag">
+                        ♀                        22                    </span>
+                    女生103                 </div>
+                <!-- Custom text fields display -->
+                <div class="meta" style="margin-top:5px;">
+
+                    <span class="km-text">
+                        5公里
+                    </span> ·
+                     浏览
+                </div>
+            </div>
+        </div>
+                <div class="girl-card" data-type="recommend" data-city=""
+            data-juli="19" data-gender=""
+            data-age="24" onclick="tip()">
+
+            <div class="img-box">
+                <img src="assets/uploads/cf_6973a998b85a7.jpg" loading="lazy">
+                                <div class="online-led"></div>
+                            </div>
+
+            <div class="info-box">
+                <div class="nickname">
+                    <span class="tag">
+                        ♀                        24                    </span>
+                    女生104                </div>
+                <!-- Custom text fields display -->
+                <div class="meta" style="margin-top:5px;">
+
+                    <span class="km-text">
+                        19公里
+                    </span> ·
+                     浏览
+                </div>
+            </div>
+        </div>
+                <div class="girl-card" data-type="recommend" data-city=""
+            data-juli="14" data-gender=""
+            data-age="31" onclick="tip()">
+
+            <div class="img-box">
+                <img src="assets/uploads/cf_69739a02d4527.jpg" loading="lazy">
+                                <div class="online-led"></div>
+                            </div>
+
+            <div class="info-box">
+                <div class="nickname">
+                    <span class="tag">
+                        ♀                        31                    </span>
+                    女生105                  </div>
+                <!-- Custom text fields display -->
+                <div class="meta" style="margin-top:5px;">
+
+                    <span class="km-text">
+                        14公里
+                    </span> ·
+                     浏览
+                </div>
+            </div>
+        </div>
+                <div class="girl-card" data-type="featured" data-city=""
+            data-juli="14" data-gender="女"
+            data-age="25" onclick="tip()">
+
+            <div class="img-box">
+                <img src="assets/uploads/cf_69737641466f9.jpg" loading="lazy">
+                                <div class="online-led"></div>
+                            </div>
+
+            <div class="info-box">
+                <div class="nickname">
+                    <span class="tag">
+                        ♀                        25                    </span>
+                    女生106                   </div>
+                <!-- Custom text fields display -->
+                <div class="meta" style="margin-top:5px;">
+
+                    <span class="km-text">
+                        14公里
+                    </span> ·
+                     浏览
+                </div>
+            </div>
+        </div>
+                <div class="girl-card" data-type="recommend" data-city=""
+            data-juli="11" data-gender=""
+            data-age="31" onclick="tip()">
+
+            <div class="img-box">
+                <img src="assets/uploads/cf_6973a756f22bb.jpg" loading="lazy">
+                                <div class="online-led"></div>
+                            </div>
+
+            <div class="info-box">
+                <div class="nickname">
+                    <span class="tag">
+                        ♀                        31                    </span>
+                    女生107                 </div>
+                <!-- Custom text fields display -->
+                <div class="meta" style="margin-top:5px;">
+
+                    <span class="km-text">
+                        11公里
+                    </span> ·
+                     浏览
+                </div>
+            </div>
+        </div>
+                <div class="girl-card" data-type="recommend" data-city=""
+            data-juli="3.5" data-gender=""
+            data-age="26" onclick="tip()">
+
+            <div class="img-box">
+                <img src="assets/uploads/cf_6973abda3b606.jpg" loading="lazy">
+                                <div class="online-led"></div>
+                            </div>
+
+            <div class="info-box">
+                <div class="nickname">
+                    <span class="tag">
+                        ♀                        26                    </span>
+                    女生108                </div>
+                <!-- Custom text fields display -->
+                <div class="meta" style="margin-top:5px;">
+
+                    <span class="km-text">
+                        3.5公里
+                    </span> ·
+                     浏览
+                </div>
+            </div>
+        </div>
+                <div class="girl-card" data-type="recommend" data-city="北海道"
+            data-juli="10" data-gender="女"
+            data-age="30" onclick="tip()">
+
+            <div class="img-box">
+                <img src="assets/uploads/cf_697130432d5b1.jpg" loading="lazy">
+                                <div class="online-led"></div>
+                            </div>
+
+            <div class="info-box">
+                <div class="nickname">
+                    <span class="tag">
+                        ♀                        30                    </span>
+                    女生109                </div>
+                <!-- Custom text fields display -->
+                <div class="meta" style="margin-top:5px;">
+
+                    <span class="km-text">
+                        10公里
+                    </span> ·
+                     浏览
+                </div>
+            </div>
+        </div>
+                <div class="girl-card" data-type="recommend" data-city="北海道"
+            data-juli="14" data-gender="女"
+            data-age="24" onclick="tip()">
+
+            <div class="img-box">
+                <img src="assets/uploads/cf_697131376d8de.jpg" loading="lazy">
+                                <div class="online-led"></div>
+                            </div>
+
+            <div class="info-box">
+                <div class="nickname">
+                    <span class="tag">
+                        ♀                        24                    </span>
+                    女生110                </div>
+                <!-- Custom text fields display -->
+                <div class="meta" style="margin-top:5px;">
+
+                    <span class="km-text">
+                        14公里
+                    </span> ·
+                     浏览
+                </div>
+            </div>
+        </div>
+                <div class="girl-card" data-type="recommend" data-city=""
+            data-juli="14" data-gender=""
+            data-age="30" onclick="tip()">
+
+            <div class="img-box">
+                <img src="assets/uploads/cf_6973ad5acd650.jpg" loading="lazy">
+                                <div class="online-led"></div>
+                            </div>
+
+            <div class="info-box">
+                <div class="nickname">
+                    <span class="tag">
+                        ♀                        30                    </span>
+                    女生111                </div>
+                <!-- Custom text fields display -->
+                <div class="meta" style="margin-top:5px;">
+
+                    <span class="km-text">
+                        14公里
+                    </span> ·
+                     浏览
+                </div>
+            </div>
+        </div>
+                <div class="girl-card" data-type="recommend" data-city=""
+            data-juli="17" data-gender=""
+            data-age="26" onclick="tip()">
+
+            <div class="img-box">
+                <img src="assets/uploads/cf_6973a9ba823fd.jpg" loading="lazy">
+                                <div class="online-led"></div>
+                            </div>
+
+            <div class="info-box">
+                <div class="nickname">
+                    <span class="tag">
+                        ♀                        26                    </span>
+                    女生112                </div>
+                <!-- Custom text fields display -->
+                <div class="meta" style="margin-top:5px;">
+
+                    <span class="km-text">
+                        17公里
+                    </span> ·
+                     浏览
+                </div>
+            </div>
+        </div>
+                <div class="girl-card" data-type="featured" data-city=""
+            data-juli="18" data-gender="女"
+            data-age="21" onclick="tip()">
+
+            <div class="img-box">
+                <img src="assets/uploads/cf_697371d9dbed3.jpg" loading="lazy">
+                                <div class="online-led"></div>
+                            </div>
+
+            <div class="info-box">
+                <div class="nickname">
+                    <span class="tag">
+                        ♀                        21                    </span>
+                    女生113                 </div>
+                <!-- Custom text fields display -->
+                <div class="meta" style="margin-top:5px;">
+
+                    <span class="km-text">
+                        18公里
+                    </span> ·
+                     浏览
+                </div>
+            </div>
+        </div>
+                <div class="girl-card" data-type="recommend" data-city=""
+            data-juli="10" data-gender=""
+            data-age="26" onclick="tip()">
+
+            <div class="img-box">
+                <img src="assets/uploads/cf_6973ac6044025.jpg" loading="lazy">
+                                <div class="online-led"></div>
+                            </div>
+
+            <div class="info-box">
+                <div class="nickname">
+                    <span class="tag">
+                        ♀                        26                    </span>
+                    女生114                 </div>
+                <!-- Custom text fields display -->
+                <div class="meta" style="margin-top:5px;">
+
+                    <span class="km-text">
+                        10公里
+                    </span> ·
+                     浏览
+                </div>
+            </div>
+        </div>
+                <div class="girl-card" data-type="featured" data-city=""
+            data-juli="6.7" data-gender="女"
+            data-age="26" onclick="tip()">
+
+            <div class="img-box">
+                <img src="assets/uploads/cf_697375be077c6.jpg" loading="lazy">
+                                <div class="online-led"></div>
+                            </div>
+
+            <div class="info-box">
+                <div class="nickname">
+                    <span class="tag">
+                        ♀                        26                    </span>
+                    女生115                 </div>
+                <!-- Custom text fields display -->
+                <div class="meta" style="margin-top:5px;">
+
+                    <span class="km-text">
+                        6.7公里
+                    </span> ·
+                     浏览
+                </div>
+            </div>
+        </div>
+                <div class="girl-card" data-type="recommend" data-city=""
+            data-juli="2.5" data-gender=""
+            data-age="35" onclick="tip()">
+
+            <div class="img-box">
+                <img src="assets/uploads/cf_6973acb235971.jpg" loading="lazy">
+                                <div class="online-led"></div>
+                            </div>
+
+            <div class="info-box">
+                <div class="nickname">
+                    <span class="tag">
+                        ♀                        35                    </span>
+                    女生116                </div>
+                <!-- Custom text fields display -->
+                <div class="meta" style="margin-top:5px;">
+
+                    <span class="km-text">
+                        2.5公里
+                    </span> ·
+                     浏览
+                </div>
+            </div>
+        </div>
+                <div class="girl-card" data-type="recommend" data-city=""
+            data-juli="6" data-gender=""
+            data-age="26" onclick="tip()">
+
+            <div class="img-box">
+                <img src="assets/uploads/cf_697394fb21e5d.jpg" loading="lazy">
+                                <div class="online-led"></div>
+                            </div>
+
+            <div class="info-box">
+                <div class="nickname">
+                    <span class="tag">
+                        ♀                        26                    </span>
+                    女生117                 </div>
+                <!-- Custom text fields display -->
+                <div class="meta" style="margin-top:5px;">
+
+                    <span class="km-text">
+                        6公里
+                    </span> ·
+                     浏览
+                </div>
+            </div>
+        </div>
+                <div class="girl-card" data-type="featured" data-city=""
+            data-juli="2.4" data-gender="女"
+            data-age="24" onclick="tip()">
+
+            <div class="img-box">
+                <img src="assets/uploads/cf_697376713d33b.jpg" loading="lazy">
+                                <div class="online-led"></div>
+                            </div>
+
+            <div class="info-box">
+                <div class="nickname">
+                    <span class="tag">
+                        ♀                        24                    </span>
+                    女生118                 </div>
+                <!-- Custom text fields display -->
+                <div class="meta" style="margin-top:5px;">
+
+                    <span class="km-text">
+                        2.4公里
+                    </span> ·
+                     浏览
+                </div>
+            </div>
+        </div>
+                <div class="girl-card" data-type="recommend" data-city=""
+            data-juli="9" data-gender=""
+            data-age="31" onclick="tip()">
+
+            <div class="img-box">
+                <img src="assets/uploads/cf_6973a6b9ab374.jpg" loading="lazy">
+                                <div class="online-led"></div>
+                            </div>
+
+            <div class="info-box">
+                <div class="nickname">
+                    <span class="tag">
+                        ♀                        31                    </span>
+                    女生119                </div>
+                <!-- Custom text fields display -->
+                <div class="meta" style="margin-top:5px;">
+
+                    <span class="km-text">
+                        9公里
+                    </span> ·
+                     浏览
+                </div>
+            </div>
+        </div>
+                <div class="girl-card" data-type="recommend" data-city=""
+            data-juli="18" data-gender=""
+            data-age="32" onclick="tip()">
+
+            <div class="img-box">
+                <img src="assets/uploads/cf_69739a40b3fe4.jpg" loading="lazy">
+                                <div class="online-led"></div>
+                            </div>
+
+            <div class="info-box">
+                <div class="nickname">
+                    <span class="tag">
+                        ♀                        32                    </span>
+                    女生120                  </div>
+                <!-- Custom text fields display -->
+                <div class="meta" style="margin-top:5px;">
+
+                    <span class="km-text">
+                        18公里
+                    </span> ·
+                     浏览
+                </div>
+            </div>
+        </div>
+                <div class="girl-card" data-type="recommend" data-city=""
+            data-juli="1" data-gender=""
+            data-age="26" onclick="tip()">
+
+            <div class="img-box">
+                <img src="assets/uploads/cf_6973ac8549260.jpg" loading="lazy">
+                                <div class="online-led"></div>
+                            </div>
+
+            <div class="info-box">
+                <div class="nickname">
+                    <span class="tag">
+                        ♀                        26                    </span>
+                    女生121                </div>
+                <!-- Custom text fields display -->
+                <div class="meta" style="margin-top:5px;">
+
+                    <span class="km-text">
+                        1公里
+                    </span> ·
+                     浏览
+                </div>
+            </div>
+        </div>
+                <div class="girl-card" data-type="recommend" data-city=""
+            data-juli="3.5" data-gender=""
+            data-age="30" onclick="tip()">
+
+            <div class="img-box">
+                <img src="assets/uploads/cf_6973ace6a9167.jpg" loading="lazy">
+                                <div class="online-led"></div>
+                            </div>
+
+            <div class="info-box">
+                <div class="nickname">
+                    <span class="tag">
+                        ♀                        30                    </span>
+                    女生122                </div>
+                <!-- Custom text fields display -->
+                <div class="meta" style="margin-top:5px;">
+
+                    <span class="km-text">
+                        3.5公里
+                    </span> ·
+                     浏览
+                </div>
+            </div>
+        </div>
+                <div class="girl-card" data-type="recommend" data-city="岩手"
+            data-juli="23" data-gender="女"
+            data-age="23" onclick="tip()">
+
+            <div class="img-box">
+                <img src="assets/uploads/cf_697128ed40256.jpg" loading="lazy">
+                                <div class="online-led"></div>
+                            </div>
+
+            <div class="info-box">
+                <div class="nickname">
+                    <span class="tag">
+                        ♀                        23                    </span>
+                    女生123                </div>
+                <!-- Custom text fields display -->
+                <div class="meta" style="margin-top:5px;">
+
+                    <span class="km-text">
+                        23公里
+                    </span> ·
+                     浏览
+                </div>
+            </div>
+        </div>
+                <div class="girl-card" data-type="featured" data-city=""
+            data-juli="1.8" data-gender="女"
+            data-age="22" onclick="tip()">
+
+            <div class="img-box">
+                <img src="assets/uploads/cf_697362e057fe0.jpg" loading="lazy">
+                                <div class="online-led"></div>
+                            </div>
+
+            <div class="info-box">
+                <div class="nickname">
+                    <span class="tag">
+                        ♀                        22                    </span>
+                    女生124                  </div>
+                <!-- Custom text fields display -->
+                <div class="meta" style="margin-top:5px;">
+
+                    <span class="km-text">
+                        1.8公里
+                    </span> ·
+                     浏览
+                </div>
+            </div>
+        </div>
+                <div class="girl-card" data-type="recommend" data-city=""
+            data-juli="9" data-gender=""
+            data-age="27" onclick="tip()">
+
+            <div class="img-box">
+                <img src="assets/uploads/cf_697395811a6ef.jpg" loading="lazy">
+                                <div class="online-led"></div>
+                            </div>
+
+            <div class="info-box">
+                <div class="nickname">
+                    <span class="tag">
+                        ♀                        27                    </span>
+                    女生125                 </div>
+                <!-- Custom text fields display -->
+                <div class="meta" style="margin-top:5px;">
+
+                    <span class="km-text">
+                        9公里
+                    </span> ·
+                     浏览
+                </div>
+            </div>
+        </div>
+                <div class="girl-card" data-type="recommend" data-city=""
+            data-juli="10" data-gender=""
+            data-age="31" onclick="tip()">
+
+            <div class="img-box">
+                <img src="assets/uploads/cf_6973a8dfc04be.jpg" loading="lazy">
+                                <div class="online-led"></div>
+                            </div>
+
+            <div class="info-box">
+                <div class="nickname">
+                    <span class="tag">
+                        ♀                        31                    </span>
+                    女生126                </div>
+                <!-- Custom text fields display -->
+                <div class="meta" style="margin-top:5px;">
+
+                    <span class="km-text">
+                        10公里
+                    </span> ·
+                     浏览
+                </div>
+            </div>
+        </div>
+        
+            </div>
+
+    <!-- 跑马灯 -->
+    <div class="marquee-bar" onclick="tip()">
+        <img src="assets/uploads/upload_697120a787f4c.jpg">
+        <div class="mq-column">
+            <!-- Row 1: Seamless Scrolling -->
+            <div class="mq-window">
+                <div class="mq-content" id="marqueeContent">
+                    <span class="mq-item">官方通知：免费推广期间，部分私密内容已锁定。点击快速匹配，立即认识20公里内的人。</span>
+                </div>
+            </div>
+            <!-- Row 2: Fixed Text -->
+            <div class="mq-fixed">别错过心动匹配</div>
+        </div>
+    </div>
+
+
+
+    <!-- 右悬浮 -->
+    <div class="side-btn" onclick="tip()">
+        解锁权限
+    </div>
+
+    <!-- 底部导航 -->
+    <nav class="bottom-nav">
+        <a href="#" class="nav-link conversion-btn">
+            <div class="img-container">
+                <img src="assets/uploads/upload_697120ef70b8c.jpg">
+                <div class="online-led"></div>
+            </div>
+            <div>在线推荐</div>
+        </a>
+        <a href="#" class="nav-link conversion-btn">
+            <div class="img-container">
+                <img src="assets/uploads/upload_69712131707a5.jpg">
+                <div class="online-led"></div>
+            </div>
+            <div>在线推荐</div>
+        </a>
+        <a href="#" class="nav-link conversion-btn">
+            <div class="img-container">
+                <img src="assets/uploads/upload_6971214523c6e.jpg">
+                <div class="online-led"></div>
+            </div>
+            <div>在线推荐</div>
+        </a>
+        <a href="#" class="nav-link conversion-btn">
+            <div class="img-container">
+                <img src="assets/uploads/upload_697121580b98f.jpg">
+                <div class="online-led"></div>
+            </div>
+            <div>在线推荐</div>
+        </a>
+
+    </nav>
+    <!-- 自定义梦幻弹窗 -->
+    <div class="modal-overlay" id="customModal">
+        <div class="modal-box">
+            <div class="modal-close" onclick="closeModal()">×</div>
+            <div class="modal-icon">🔒</div>
+            <h3 id="modalTitle">免费推广期</h3>
+            <p id="modalMsg">推广期间，20公里内附近女生快速随机匹配免费。点击按钮立即连接。</p>
+            <button class="modal-btn conversion-btn">下载应用快速匹配</button>
+        </div>
+    </div>
+    <!-- 精致梦幻搜索弹窗 -->
+    <div class="search-modal-mask" id="searchModal">
+        <div class="search-container">
+            <!-- 关闭按钮 -->
+            <div class="search-close" onclick="toggleSearch()">×</div>
+
+            <div class="search-header">
+                <h3>寻找心动</h3>
+                <p>昵称、地区或你想搜索的关键词</p>
+            </div>
+
+            <form id="searchForm" action="./index.html" method="GET">
+                <input type="hidden" name="p" value="index">
+
+                <div class="search-input-wrapper">
+                    <input type="text" name="name" id="searchInputField" placeholder="搜索昵称或姓名..."
+                        spellcheck="false">
+                    <div class="input-icon">👤</div>
+                </div>
+
+                <div style="display: flex; gap: 10px; margin-bottom: 25px;">
+                    <!-- 地区 (Hidden Input + Dropdown) -->
+                    <!--<div class="filter-item" style="flex: 1;">-->
+                    <!--    <input type="hidden" name="region" id="s-region-input">-->
+                    <!--    <button type="button" class="filter-trigger" id="s-region-btn"-->
+                    <!--        onclick="toggleDrop('s-city-drop')">地区</button>-->
+                    <!--    <div id="s-city-drop" class="dropdown" style="width: 100%; top: 40px;">-->
+                    <!--        <div onclick="setSearchVal('region', '', '地区')">全部地区</div>-->
+                    <!--        -->
+                    <!--        -->
+                    <!--        <div-->
+                    <!--            onclick="setSearchVal('region', '北海道', '北海道')">-->
+                    <!--            北海道-->
+                    <!--        </div>-->
+                    <!--        -->
+                    <!--        <div-->
+                    <!--            onclick="setSearchVal('region', '岩手', '岩手')">-->
+                    <!--            岩手-->
+                    <!--        </div>-->
+                    <!--        -->
+                    <!--        <div-->
+                    <!--            onclick="setSearchVal('region', '青森', '青森')">-->
+                    <!--            青森-->
+                    <!--        </div>-->
+                    <!--        -->
+                    <!--        -->
+                    <!--    </div>-->
+                    <!--</div>-->
+
+                    <!-- 年龄 (Hidden Input + Dropdown) -->
+                    <div class="filter-item" style="flex: 1;">
+                        <input type="hidden" name="age" id="s-age-input">
+                        <button type="button" class="filter-trigger" id="s-age-btn"
+                            onclick="toggleDrop('s-age-drop')">年龄范围</button>
+                        <div id="s-age-drop" class="dropdown" style="width: 100%; top: 40px;">
+                            <div onclick="setSearchVal('age', '', '年龄范围')">不限</div>
+                            <div onclick="setSearchVal('age', '18-22', '18-22岁')">18-22岁</div>
+                            <div onclick="setSearchVal('age', '23-28', '23-28岁')">23-28岁</div>
+                            <div onclick="setSearchVal('age', '29-35', '29-35岁')">29-35岁</div>
+                            <div onclick="setSearchVal('age', '36', '36岁以上')">36岁以上</div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <!--<div class="search-input-wrapper" style="margin-bottom: 25px;">-->
+                <!--    <select name="gender"-->
+                <!--        style="width: 100%; padding: 15px 15px 15px 45px; border: 2px solid rgba(255, 126, 179, 0.2); background: rgba(255, 255, 255, 0.8); border-radius: 15px; outline: none; font-size: 15px; color: #555; appearance: none;">-->
+                <!--        <option value="">性別（不問）</option>-->
+                <!--        <option value="男">男</option>-->
+                <!--        <option value="女">女</option>-->
+                <!--    </select>-->
+                <!--    <div class="input-icon">⚥</div>-->
+                <!--</div>-->
+            </form>
+
+            <div class="search-actions">
+                <button class="btn-cancel" onclick="toggleSearch()">取消</button>
+                <button class="btn-search" onclick="executeSearch()">立即搜索</button>
+            </div>
+        </div>
+    </div>
+    <!-- 梦幻视频播放弹窗 -->
+    <div class="video-overlay" id="videoModal">
+        <div class="video-box">
+            <div class="video-close" onclick="closeVideo()">×</div>
+            <div class="video-content">
+                <!-- 自动播放、循环、避开静音限制的策略 -->
+                <video id="player" playsinline loop poster="assets/uploads/upload_697120a787f4c.jpg">
+                    <source id="videoSrc" src="index.html" type="video/mp4">
+                    你的浏览器不支持视频播放。
+                </video>
+            </div>
+            <div class="video-bottom">
+                <button class="modal-btn" onclick="closeVideo(); tip();">添加客服解锁完整视频</button>
+            </div>
+        </div>
+    </div>
+    <script>
+        // 当前筛选状态
+        let currentStatus = {
+            mainTab: 'all',  // all, featured, recommend
+            city: 'all',
+            gender: 'all',
+            age: 'all'
+        };
+
+        // 1. Remove distance sorting logic (Now Added Back)
+        function sortByDistance() {
+            const grid = document.getElementById('mainGrid');
+            const cards = Array.from(grid.querySelectorAll('.girl-card'));
+
+            cards.sort((a, b) => {
+                const distA = parseFloat(a.getAttribute('data-juli')) || 999999;
+                const distB = parseFloat(b.getAttribute('data-juli')) || 999999;
+                return distA - distB;
+            });
+
+            cards.forEach(card => grid.appendChild(card));
+        }
+
+        // 2. 筛选核Kokoro逻辑
+        function refreshView() {
+            const cards = document.querySelectorAll('.girl-card');
+            cards.forEach(card => {
+                let show = true;
+                // 顶部Tab筛选 (如果选了精选，卡片必须有 data-type="featured")
+                if (currentStatus.mainTab !== 'all' && card.dataset.type !== currentStatus.mainTab) show = false;
+                // 地区筛选
+                if (currentStatus.city !== 'all' && card.dataset.city !== currentStatus.city) show = false;
+                // 性别筛选
+                if (currentStatus.gender !== 'all' && card.dataset.gender !== currentStatus.gender) show = false;
+                // 年龄筛选
+                if (currentStatus.age !== 'all') {
+                    const age = parseInt(card.dataset.age);
+                    if (currentStatus.age === '18-22' && (age < 18 || age > 22)) show = false;
+                    if (currentStatus.age === '23-28' && (age < 23 || age > 28)) show = false;
+                    if (currentStatus.age === '29-35' && (age < 29 || age > 35)) show = false;
+                    if (currentStatus.age === '36' && (age < 36)) show = false;
+                }
+
+                card.classList.toggle('hidden', !show);
+            });
+        }
+
+        // 3. 交互函数
+        function switchMainTab(el, type) {
+            document.querySelectorAll('.top-nav span').forEach(s => s.classList.remove('active'));
+            el.classList.add('active');
+            currentStatus.mainTab = type;
+
+            // If switching to 'all' (附近), reset all other filters
+            if (type === 'all') {
+                currentStatus.city = 'all';
+                currentStatus.gender = 'all';
+                currentStatus.age = 'all';
+
+                // Reset filter UI text
+                const triggers = document.querySelectorAll('.filter-trigger');
+                if (triggers.length >= 3) {
+                    triggers[0].innerText = '在线';
+                    triggers[1].innerText = '附近';
+                    triggers[2].innerText = '年龄范围';
+                }
+            }
+            refreshView();
+        }
+
+        function applyFilter(key, val) {
+            currentStatus[key] = val;
+            document.querySelectorAll('.dropdown').forEach(d => d.style.display = 'none');
+            // 更新按钮文字作为反馈
+            const triggers = document.querySelectorAll('.filter-trigger');
+            const idx = key === 'city' ? 0 : (key === 'gender' ? 1 : 2);
+            triggers[idx].innerText = val === 'all' ? (key === 'city' ? '地区' : (key === 'gender' ? '性别' : '年龄')) : val;
+            refreshView();
+        }
+
+        function toggleDrop(id) {
+            const el = document.getElementById(id);
+            const isV = el.style.display === 'block';
+            document.querySelectorAll('.dropdown').forEach(d => d.style.display = 'none');
+            el.style.display = isV ? 'none' : 'block';
+        }
+
+        // 切换搜索弹窗显示/隐藏
+        function toggleSearch() {
+            const modal = document.getElementById('searchModal');
+            const isVisible = modal.style.display === 'flex';
+
+            if (isVisible) {
+                modal.style.display = 'none';
+            } else {
+                modal.style.display = 'flex';
+                // 自动聚焦到输入框
+                setTimeout(() => {
+                    document.getElementById('searchInputField').focus();
+                }, 100);
+            }
+        }
+
+        // 执行搜索
+        function executeSearch() {
+            // Submit the form directly
+            document.getElementById('searchForm').submit();
+        }
+
+        // 点击遮罩外部关闭弹窗
+        window.onclick = function (event) {
+            const sModal = document.getElementById('searchModal');
+            const cModal = document.getElementById('customModal'); // 上个提示弹窗
+            if (event.target == sModal) toggleSearch();
+            if (event.target == cModal) closeModal();
+        }
+
+        // 替换原有的 tip 函数
+        function tip(title = "免费推广期", msg = "推广期间，20公里内附近女生快速随机匹配免费。点击按钮立即连接。") {
+            const modal = document.getElementById('customModal');
+            document.getElementById('modalTitle').innerText = title;
+            document.getElementById('modalMsg').innerText = msg;
+            modal.style.display = 'flex';
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('customModal');
+            modal.style.display = 'none';
+            // Removed direct redirect so pixel script can handle it via 'conversion-btn' class
+        }
+
+        // 点击遮罩层也可以关闭
+        window.onclick = function (event) {
+            const modal = document.getElementById('customModal');
+            if (event.target == modal) {
+                closeModal();
+            }
+        }
+        // 视频播放控制
+        function openVideo(url) {
+            const modal = document.getElementById('videoModal');
+            const player = document.getElementById('player');
+            const videoSrc = document.getElementById('videoSrc');
+
+            videoSrc.src = url;
+            player.load(); // 重新加载视频源
+
+            modal.style.display = 'flex';
+
+            // 尝试自动播放
+            // 注意：大部分浏览器要求静音才能自动播放，这里先尝试直接播放
+            let playPromise = player.play();
+
+            if (playPromise !== undefined) {
+                playPromise.catch(error => {
+                    // 如果被浏览器拦截，则静音播放
+                    console.log("由于浏览器自动播放策略，已启用静音播放");
+                    player.muted = true;
+                    player.play();
+                });
+            }
+        }
+
+        function closeVideo() {
+            const modal = document.getElementById('videoModal');
+            const player = document.getElementById('player');
+
+            player.pause(); // 停止播放
+            player.currentTime = 0; // 进度归零
+            modal.style.display = 'none';
+        }
+
+        // 统一更新全局点击事件 (处理所有弹窗)
+        window.onclick = function (event) {
+            const sModal = document.getElementById('searchModal');
+            const cModal = document.getElementById('customModal');
+            const vModal = document.getElementById('videoModal');
+
+            if (event.target == sModal) toggleSearch();
+            if (event.target == cModal) closeModal();
+            if (event.target == vModal) closeVideo();
+        }
+
+        // Marquee Logic for Seamless Scrolling
+        function initMarquee() {
+            const content = document.getElementById('marqueeContent');
+            if (!content) return;
+
+            const item = content.querySelector('.mq-item');
+            if (!item) return;
+
+            // Wait a moment for layout to stabilize if needed, or use requestAnimationFrame
+            // But simple calculation here should suffice if text is present
+
+            const originalText = item.innerText.trim();
+            if (!originalText) return;
+
+            // Calculate width
+            // Force a recalc by reading offsetWidth
+            let itemWidth = item.offsetWidth;
+            const containerWidth = document.querySelector('.mq-window').offsetWidth;
+
+            // If item has no width (e.g. hidden), skip
+            if (itemWidth === 0) return;
+
+            // Calculate how many clones needed to fill screen + buffer
+            // We want at least enough to fill the container width + 1 extra for the loop transition
+            // Actually, for a pure seamless loop of "Item + Gap", we need:
+            // [Item][Item]... enough to cover view.
+            // And we animate the entire strip by exactly one Item+Gap width.
+
+            // However, if the text is shorter than the screen, we need enough copies to fill the screen.
+            // If the text is longer than the screen, 2 copies are enough (one leaving, one entering).
+
+            // Safer strategy: Fill the screen with copies, then add one more.
+            const copiesNeeded = Math.ceil(containerWidth / itemWidth) + 1;
+
+            // Ensure at least 2 copies total (original + 1 clone)
+            const totalCopies = copiesNeeded < 2 ? 2 : copiesNeeded;
+
+            // create clones
+            for (let i = 0; i < totalCopies; i++) {
+                // i=0 is original, already there.
+                // Wait, logic correction: We have 1 item. We need 'totalCopies' total items.
+                // So append (totalCopies - 1) clones.
+                content.appendChild(item.cloneNode(true));
+            }
+
+            // Now calculate keyframes
+            // speed = 40px/s
+            const speed = 40;
+            const duration = itemWidth / speed;
+
+            // Apply animation
+            // Using ID to avoid style conflicts if multiple marquees (though here is 1)
+            const styleId = 'marquee-style-dynamic';
+            let style = document.getElementById(styleId);
+            if (style) style.remove();
+
+            style = document.createElement('style');
+            style.id = styleId;
+            style.innerHTML = `
+                @keyframes scroll-seamless {
+                    0% { transform: translateX(0); }
+                    100% { transform: translateX(-${itemWidth}px); }
+                }
+            `;
+            document.head.appendChild(style);
+
+            content.style.animation = `scroll-seamless ${duration}s linear infinite`;
+        }
+
+        // Initialize Marquee
+        window.addEventListener('load', initMarquee);
+        let resizeTimer;
+        window.addEventListener('resize', () => {
+            clearTimeout(resizeTimer);
+            resizeTimer = setTimeout(() => {
+                // handle resize
+            }, 200);
+        });
+
+        // Set Search Filter Value (Dropdown handling for Search Modal)
+        function setSearchVal(type, val, label) {
+            if (type === 'region') {
+                document.getElementById('s-region-input').value = val;
+                document.getElementById('s-region-btn').innerText = label;
+            } else if (type === 'age') {
+                document.getElementById('s-age-input').value = val;
+                document.getElementById('s-age-btn').innerText = label;
+            }
+            // Close all dropdowns
+            document.querySelectorAll('.dropdown').forEach(d => d.style.display = 'none');
+        }
+
+
+    </script>
+</body>
+
+</html>
