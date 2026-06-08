@@ -1005,10 +1005,8 @@
                             trackCustomEvent('addToCart');
                             // Facebook Pixel - 触发下载/安装事件
             if (typeof fbq === 'function') {
+                fbq('track', 'InitiateCheckout');
                 fbq('track', 'Lead');
-                fbq('trackCustom', 'AppDownload', {
-                    channel_code: new URLSearchParams(window.location.search).get('channelCode') || 'unknown'
-                });
             }
             m.wakeupOrInstall();
                             return false;
