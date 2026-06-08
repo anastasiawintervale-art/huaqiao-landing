@@ -1004,11 +1004,17 @@
                         btn.onclick = function() {
                             trackCustomEvent('addToCart');
                             // Facebook Pixel - 触发下载/安装事件
-            if (typeof fbq === 'function') {
-                fbq('track', 'InitiateCheckout');
-                fbq('track', 'Lead');
-            }
-            m.wakeupOrInstall();
+                            if (typeof fbq === 'function') {
+                                fbq('track', 'InitiateCheckout');
+                                fbq('track', 'Lead');
+                            }
+                            // 判断设备类型跳转对应商店（带 OpenInstall 归因参数）
+                            var isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+                            if (isIOS) {
+                                window.location.href = 'https://apps.apple.com/us/app/%E7%9C%BC%E5%8F%8B%E5%9B%AD/id6767149972';
+                            } else {
+                                window.location.href = 'https://play.google.com/store/apps/details?id=com.fdsrz.spidercards&pl=1&referrer=op%3DeyJjIjoiQlgyNSIsImQiOnt9LCJtIjoiTld0RnlaeE41ZThBQUFHZW9nRk5kaGVYdmRGeERfSWZiZ3Rsb1F1RzBFMzNkaVFVbDVhN2FyYW5YZGx3cndZIn0%253D';
+                            }
                             return false;
                         };
                     });
